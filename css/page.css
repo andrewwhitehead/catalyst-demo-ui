@@ -1,0 +1,75 @@
+body {
+	color: #333;
+}
+.conn-outer {
+	border-radius: 8px;
+	border: 1.5px solid #999;
+	margin: 15px;
+	padding: 2px 2px 10px;
+}
+.conn-head {
+	display: flex;
+	font-family: Montserrat;
+	padding: 10px;
+}
+.conn-info {
+	flex: auto;
+	padding-left: 15px;
+	word-break: break-word;
+}
+.conn-label {
+	margin: 10px 0 8px;
+}
+.conn-did {
+	color: #666;
+	margin-top: 5px;
+}
+.activity-row {
+	font-family: Montserrat;
+	font-size: 105%;
+	margin: 5px 15px;
+	padding-bottom: 4px;
+}
+.activity-row .fa {
+	font-size: 24px;
+	margin-right: 6px;
+	margin-top: -2px;
+	opacity: 0.6;
+}
+.activity-time {
+	color: #666;
+	font-size: 85%;
+	padding: 2px 5px 0 0;
+	text-align: right;
+}
+.message {
+	background: lightblue;
+	border-radius: 10px;
+	color: #222;
+	padding: 5px 10px;
+}
+.received .message {
+	background: #9eb;
+}
+.invitation, .request, .response {
+	padding: 5px 10px;
+}
+.ping {
+	background: #ccc;
+	border-radius: 10px;
+	padding: 5px 10px;
+}
+.conn-actions {
+	flex: 0 0 25%;
+	text-align: right;
+}
+.conn-action {
+	background: #fff;
+	border-radius: 5px;
+	border: 2px solid #45f;
+	color: #45f;
+	font-family: Montserrat;
+	font-size: 14px;
+	font-weight: 600;
+	padding: 8px 12px;
+}
