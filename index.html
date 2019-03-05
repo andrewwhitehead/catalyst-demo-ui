@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-	<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat+Alternates" rel="stylesheet">
 
 	<link rel="stylesheet" href="css/page.css">
 
@@ -19,20 +19,50 @@
 <body>
 
 <div id="app-outer" class="app-outer">
-	<div v-for="conn in connections" class="conn-outer">
+	<div class="app-header" v-if="mode === 'connections'">
+		<button class="conn-action" @click.prevent="showReceive">Receive Invitation</button>
+		<button class="conn-action" @click.prevent="showGenerate">Generate Invitation</button>
+	</div>
+	<div class="form-outer" v-if="mode === 'receive_invite'">
+		<form @submit.prevent="receiveInvite()">
+			<div class="form-group">
+				<input type="url" class="form-input" name="invite_url" placeholder="http://example.com?c_i=..." v-model="input_invite_url" size="30">
+			</div>
+			<button type="submit" class="conn-action">Receive Invitation</button>
+			<button type="button" class="conn-action cancel" @click.prevent="showConnections">Cancel</button>
+		</form>
+	</div>
+	<div class="form-outer" v-if="mode === 'generate_invite'">
+		<div class="form-group">
+			<canvas id="invitation-qr"></canvas>
+		</div>
+		<div class="form-group">
+			<div class="invitation-url identifier">{{ recvd_invite_url }}</div>
+		</div>
+		<button type="button" class="conn-action" @click.prevent="copyInvite">Copy Invitation</button>
+		<button type="button" class="conn-action cancel" @click.prevent="showConnections">Done</button>
+	</div>
+	<div v-for="conn in connections" class="conn-outer" v-if="mode === 'connections'">
 		<div class="conn-head">
 			<div class="avatar-outer">
 				<img :src="conn.image" class="avatar">
 			</div>
 			<div class="conn-info">
-				<h2 class="conn-label" :style="{ color: conn.color }">{{ conn.label }}</h2>
-				<p class="conn-did">{{ conn.my_did }}</p>
+				<h2 class="conn-label" :style="{ color: conn.color }" v-if="conn.their_label">{{ conn.their_label }}</h2>
+				<h2 class="conn-label" :style="{ color: conn.color }" v-else-if="conn.state == 'invitation'">Generated Invitation</h2>
+				<h2 class="conn-label" :style="{ color: conn.color }" v-else>Connection</h2>
+				<p class="conn-did identifier" v-if="conn.their_did">Their DID: {{ conn.their_did }}</p>
+				<p class="conn-did identifier" v-if="conn.my_did">My DID: {{ conn.my_did }}</p>
 			</div>
 			<div class="conn-actions">
-				<button class="conn-action">Send Request</button>
+				<button type="button" class="conn-action" v-if="conn.state == 'invitation' && conn.initiator == 'external'" @click.prevent="acceptInvite(conn.connection_id)">Accept Invitation</button>
+				<button type="button" class="conn-action" v-if="conn.state == 'request' && conn.initiator == 'external'">Send Response</button>
 			</div>
 		</div>
 		<div class="conn-body">
+			<div class="activity-row" v-if="conn.state == 'active'">
+				<input type="text" class="form-input" name="send_message" placeholder="Send message .." size="30" @keyup.enter="sendMessage(conn.connection_id, $event.target)">
+			</div>
 			<div :class="'activity-row ' + row.direction" v-for="row in conn.activity">
 				<div class="message" v-if="row.type == 'message'">
 					<span class="fa fa-comment"></span> {{ row.content }}
@@ -66,5 +96,6 @@
 
 <script src="js/identicon.js"></script>	
 <script src="js/page.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.js"></script>
 </body>
 </html>

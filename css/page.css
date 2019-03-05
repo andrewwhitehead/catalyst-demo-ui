@@ -1,5 +1,26 @@
 body {
 	color: #333;
+	font-family: Montserrat Alternates;
+}
+.form-outer {
+	padding: 15px;
+}
+.form-input {
+	border: 1px solid #334;
+	border-radius: 3px;
+	font-family: Montserrat Alternates;
+	font-size: 18px;
+	padding: 5px 0 5px 5px;
+}
+.invitation-url {
+	border: 1px solid #889;
+	border-radius: 3px;
+	font-size: 18px;
+	padding: 5px 0 5px 5px;
+	word-break: break-word;
+}
+.form-group {
+	margin-bottom: 10px;
 }
 .conn-outer {
 	border-radius: 8px;
@@ -9,7 +30,6 @@ body {
 }
 .conn-head {
 	display: flex;
-	font-family: Montserrat;
 	padding: 10px;
 }
 .conn-info {
@@ -24,8 +44,10 @@ body {
 	color: #666;
 	margin-top: 5px;
 }
+.identifier {
+	font-variant-numeric: tabular-nums;
+}
 .activity-row {
-	font-family: Montserrat;
 	font-size: 105%;
 	margin: 5px 15px;
 	padding-bottom: 4px;
@@ -68,8 +90,13 @@ body {
 	border-radius: 5px;
 	border: 2px solid #45f;
 	color: #45f;
-	font-family: Montserrat;
+	cursor: pointer;
+	font-family: Montserrat Alternates;
 	font-size: 14px;
 	font-weight: 600;
 	padding: 8px 12px;
+}
+.conn-action.cancel {
+	border-color: #666;
+	color: #666;
 }
