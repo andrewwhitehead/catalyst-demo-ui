@@ -2,6 +2,9 @@ body {
 	color: #333;
 	font-family: Montserrat Alternates;
 }
+.app-header {
+	margin: 25px 15px;
+}
 .form-outer {
 	padding: 15px;
 }
@@ -21,6 +24,11 @@ body {
 }
 .form-group {
 	margin-bottom: 10px;
+}
+.form-label {
+	display: block;
+	font-size: 14px;
+	line-height: 1.5;
 }
 .conn-outer {
 	border-radius: 8px;
@@ -42,7 +50,7 @@ body {
 }
 .conn-did {
 	color: #666;
-	margin-top: 5px;
+	margin: 5px 0;
 }
 .identifier {
 	font-variant-numeric: tabular-nums;
@@ -51,6 +59,9 @@ body {
 	font-size: 105%;
 	margin: 5px 15px;
 	padding-bottom: 4px;
+}
+.activity-row.reply {
+	margin-bottom: 20px;
 }
 .activity-row .fa {
 	font-size: 24px;
@@ -95,6 +106,7 @@ body {
 	font-size: 14px;
 	font-weight: 600;
 	padding: 8px 12px;
+	vertical-align: bottom;
 }
 .conn-action.cancel {
 	border-color: #666;

@@ -18,15 +18,26 @@
 </head>
 <body>
 
-<div id="app-outer" class="app-outer">
+<div id="app-outer" class="app-outer" style="display: none" v-show="true">
 	<div class="app-header" v-if="mode === 'connections'">
-		<button class="conn-action" @click.prevent="showReceive">Receive Invitation</button>
+		<button class="conn-action" @click.prevent="showSettings">Settings</button>
 		<button class="conn-action" @click.prevent="showGenerate">Generate Invitation</button>
+		<button class="conn-action" @click.prevent="showReceive">Receive Invitation</button>
+	</div>
+	<div class="form-outer" v-if="mode === 'settings'">
+		<form @submit.prevent="showConnections()">
+			<div class="form-group">
+				<label class="form-label">Agent URL</label>
+				<input type="url" class="form-input" name="app_url" v-model="app_url" size="40">
+			</div>
+			<button type="submit" class="conn-action">Start</button>
+		</form>
 	</div>
 	<div class="form-outer" v-if="mode === 'receive_invite'">
-		<form @submit.prevent="receiveInvite()">
+		<form @submit.prevent="receiveInvite()" autocomplete="off">
 			<div class="form-group">
-				<input type="url" class="form-input" name="invite_url" placeholder="http://example.com?c_i=..." v-model="input_invite_url" size="30">
+				<label class="form-label">Invitation URL</label>
+				<input type="url" class="form-input" id="invite_url" name="invite_url" placeholder="http://example.com?c_i=..." v-model="input_invite_url" size="40">
 			</div>
 			<button type="submit" class="conn-action">Receive Invitation</button>
 			<button type="button" class="conn-action cancel" @click.prevent="showConnections">Cancel</button>
@@ -56,12 +67,13 @@
 			</div>
 			<div class="conn-actions">
 				<button type="button" class="conn-action" v-if="conn.state == 'invitation' && conn.initiator == 'external'" @click.prevent="acceptInvite(conn.connection_id)">Accept Invitation</button>
-				<button type="button" class="conn-action" v-if="conn.state == 'request' && conn.initiator == 'external'">Send Response</button>
+				<button type="button" class="conn-action" v-if="conn.state == 'request' && conn.initiator == 'self'" @click.prevent="acceptRequest(conn.connection_id)">Accept Request</button>
 			</div>
 		</div>
 		<div class="conn-body">
-			<div class="activity-row" v-if="conn.state == 'active'">
+			<div class="activity-row reply" v-if="conn.state == 'active'">
 				<input type="text" class="form-input" name="send_message" placeholder="Send message .." size="30" @keyup.enter="sendMessage(conn.connection_id, $event.target)">
+				&nbsp;&nbsp;<button type="button" class="conn-action" @click.prevent="sendPing(conn.connection_id)">Send Trust Ping</button>
 			</div>
 			<div :class="'activity-row ' + row.direction" v-for="row in conn.activity">
 				<div class="message" v-if="row.type == 'message'">

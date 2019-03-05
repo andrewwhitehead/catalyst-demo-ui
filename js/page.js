@@ -7,8 +7,9 @@ function formatColor(c, a) {
 
 var TEST_CONNECTIONS = [
 	{
-		my_did: "5oVR1NowLBj4XrhepcKNP6hcqrmPJgWxDpB72WBDfFMt",
-		their_did: "AsSMancnGXr7iq2hCABnzmHvHRB8dEMWJRMKB1k2aZny",
+		connection_id: "6a6e6485-8d10-4507-8edb-e65939b0321e",
+		my_did: "Re5DLGLcLpZ6rRmZZC5APx",
+		their_did: "3A1vTYjcMKbaE6ttjzxsPN",
 		their_label: "Indy Reference Agent",
 		state: "active",
 		activity: [
@@ -59,27 +60,65 @@ var app = new Vue({
 		app_url: "http://localhost:5000",
 		connections: [],
 		input_invite_url: '',
+		mode: "settings",
 		recvd_invite_url: '',
-		mode: "connections"
+		socket: null
 	},
 	created: function() {
 	},
 	mounted: function() {
 		// TEST_CONNECTIONS.forEach(conn => this.addConnection(conn));
-		this.fetchConnections();
+		// this.showConnections();
 	},
 	methods: {
+		showSettings() {
+			this.mode = "settings";
+		},
 		showConnections() {
 			this.mode = "connections";
+			this.resync();
 		},
 		addConnection (conn) {
-			if(conn.their_did) {
-				var image = new Identicon(conn.their_did, { format: 'svg', size: 84 });
+			this.setConnectionImage(conn);
+			this.connections.push(conn);
+		},
+		updateConnection (conn) {
+			var found;
+			for(var idx = 0; idx < this.connections.length; idx ++) {
+				if(this.connections[idx].connection_id === conn.connection_id)
+					found = this.connections[idx];
+			}
+			if(found) {
+				for(var k in conn) {
+					found[k] = conn[k];
+				}
+				this.setConnectionImage(found);
+			}
+			return found;
+		},
+		setConnectionImage (conn) {
+			if(conn.connection_id && ! conn.image) {
+				var image = new Identicon(conn.connection_id, { format: 'svg', size: 84 });
 				var rgbColor = image.foreground;
 				conn.color = formatColor(rgbColor);
 				conn.image = 'data:image/svg+xml;base64,' + image.toString();
 			}
-			this.connections.push(conn);
+		},
+		resync () {
+			var self = this;
+			this.socket = new WebSocket(this.app_url.replace(/^https?:/, "ws:") + "/ws");
+			this.socket.onmessage = function(event) {
+				self.receiveMessage(JSON.parse(event.data));
+			}
+			this.fetchConnections();
+		},
+		receiveMessage (msg) {
+			console.log("received message: ", msg);
+			if(msg.type === "connection_update") {
+				var conn = msg.context.connection;
+				if(! this.updateConnection(conn))
+					this.addConnection(conn);
+			}
 		},
 		fetchConnections () {
 			var self = this;
@@ -128,6 +167,10 @@ var app = new Vue({
 		},
 		showReceive () {
 			this.mode = "receive_invite";
+			this.$nextTick(function() {
+				var inp = document.getElementById("invite_url");
+				inp.select();
+			});
 		},
 		receiveInvite () {
 			var url = this.input_invite_url, pos, invite_b64, invite_text,
@@ -158,7 +201,17 @@ var app = new Vue({
 				method: "POST"
 			}).then(function(response) {
 				if(response.ok) response.json().then(function(data) {
-					console.log(data);
+					console.log("accepted invite:", data);
+				});
+			});
+		},
+		acceptRequest (conn_id) {
+			fetch(this.app_url + "/connections/" + conn_id + "/accept-request", {
+				cache: "no-cache",
+				method: "POST"
+			}).then(function(response) {
+				if(response.ok) response.json().then(function(data) {
+					console.log("accepted request:", data);
 				});
 			});
 		},
@@ -172,6 +225,12 @@ var app = new Vue({
 				},
 				method: "POST",
 				body: JSON.stringify({content: msg})
+			});
+		},
+		sendPing (conn_id) {
+			fetch(this.app_url + "/connections/" + conn_id + "/send-ping", {
+				cache: "no-cache",
+				method: "POST"
 			});
 		}
 	}
