@@ -61,9 +61,11 @@ var app = new Vue({
 		app_label: '',
 		app_endpoint: '',
 		connections: [],
+		conn_status: null,
 		conn_error: '',
 		input_invite_url: '',
 		mode: "settings",
+		ping_timeout: null,
 		recvd_invite_url: '',
 		socket: null
 	},
@@ -118,20 +120,42 @@ var app = new Vue({
 		},
 		resync () {
 			var self = this;
+			clearTimeout(this.ping_timeout);
+			var heartbeat = function() {
+				clearTimeout(self.ping_timeout);
+  				self.ping_timeout = setTimeout(function() {
+					self.socket.close();
+				}, 15000);
+			}
 			this.socket = new WebSocket(this.app_url.replace(/^https?:/, "ws:") + "/ws");
 			this.socket.onmessage = function(event) {
+				heartbeat();
 				self.receiveMessage(JSON.parse(event.data));
 			}
 			this.socket.onopen = function(event) {
+				heartbeat();
 				self.fetchConnections();
+				self.conn_error = null;
+				self.conn_status = true;
 			}
 			this.socket.onerror = function(err) {
 				self.conn_error = "Connection failed.";
+				self.conn_status = false;
+			}
+			this.socket.onclose = function(err) {
+				if(self.conn_status)
+					self.conn_error = "Disconnected.";
+				else
+					self.conn_error = "Connection failed.";
+				self.conn_status = false;
 			}
 		},
 		receiveMessage (msg) {
-			console.log("received message: ", msg);
-			if(msg.type === "connection_update") {
+			// console.log("received message: ", msg);
+			if(msg.type === "ping") {
+				// no action
+			}
+			else if(msg.type === "connection_update") {
 				var conn = msg.context.connection;
 				if(! this.updateConnection(conn))
 					this.addConnection(conn);

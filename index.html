@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-	<link href="https://fonts.googleapis.com/css?family=Montserrat+Alternates" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 
 	<link rel="stylesheet" href="css/page.css">
 
@@ -19,14 +19,19 @@
 <body>
 
 <div id="app-outer" class="app-outer" style="display: none" v-show="true">
-	<div class="app-header" v-if="mode === 'connections'">
-		<div>
-			<button class="conn-action" @click.prevent="showGenerate">Generate Invitation</button>
-			<button class="conn-action" @click.prevent="showReceive">Receive Invitation</button>
+	<div class="app-header" v-if="mode !== 'settings'">
+		<div class="icon">
+			<img src="img/secret-agent.svg" alt="Agent">
 		</div>
-		<div class="right">
+		<div>
 			<h3>{{ app_label }}</h3>
 			<p>{{ app_endpoint }}</p>
+		</div>
+		<div class="right">
+			<template v-if="mode === 'connections'">
+				<button class="conn-action" @click.prevent="showGenerate">Generate Invitation</button>
+				<button class="conn-action" @click.prevent="showReceive">Receive Invitation</button>
+			</template>
 		</div>
 		<div class="mini">
 			<button class="conn-action" @click.prevent="showSettings">Configure</button>
@@ -36,7 +41,7 @@
 		<form @submit.prevent="showConnections()">
 			<div class="form-group">
 				<label class="form-label">Agent URL</label>
-				<input type="url" class="form-input" name="app_url" v-model="app_url" size="40">
+				<input type="url" class="form-input" name="app_url" v-model="app_url" size="60">
 			</div>
 			<button type="submit" class="conn-action">Start</button>
 		</form>
@@ -45,7 +50,7 @@
 		<form @submit.prevent="receiveInvite()" autocomplete="off">
 			<div class="form-group">
 				<label class="form-label">Invitation URL</label>
-				<input type="url" class="form-input" id="invite_url" name="invite_url" placeholder="http://example.com?c_i=..." v-model="input_invite_url" size="40">
+				<input type="url" class="form-input" id="invite_url" name="invite_url" placeholder="http://example.com?c_i=..." v-model="input_invite_url" size="60">
 			</div>
 			<button type="submit" class="conn-action">Receive Invitation</button>
 			<button type="button" class="conn-action cancel" @click.prevent="showConnections">Cancel</button>
@@ -53,13 +58,16 @@
 	</div>
 	<div class="form-outer" v-if="mode === 'generate_invite'">
 		<div class="form-group">
-			<canvas id="invitation-qr"></canvas>
+			<canvas id="invitation-qr" class="invitation-qr"></canvas>
 		</div>
 		<div class="form-group">
 			<div class="invitation-url identifier">{{ recvd_invite_url }}</div>
 		</div>
 		<button type="button" class="conn-action" @click.prevent="copyInvite">Copy Invitation</button>
 		<button type="button" class="conn-action cancel" @click.prevent="showConnections">Done</button>
+	</div>
+	<div v-if="mode !== 'settings' && conn_error" class="conn-alert error">
+		{{ conn_error }}
 	</div>
 	<div v-for="conn in connections" class="conn-outer" v-if="mode === 'connections'">
 		<div class="conn-head">
@@ -68,7 +76,7 @@
 			</div>
 			<div class="conn-info">
 				<h2 class="conn-label" :style="{ color: conn.color }" v-if="conn.their_label">{{ conn.their_label }}</h2>
-				<h2 class="conn-label" :style="{ color: conn.color }" v-else-if="conn.state == 'invitation'">Generated Invitation</h2>
+				<h2 class="conn-label" :style="{ color: conn.color }" v-else-if="conn.state == 'invitation'">Pending Connection</h2>
 				<h2 class="conn-label" :style="{ color: conn.color }" v-else>Connection</h2>
 				<p class="conn-did identifier" v-if="conn.their_did">Their DID: {{ conn.their_did }}</p>
 				<p class="conn-did identifier" v-if="conn.my_did">My DID: {{ conn.my_did }}</p>
@@ -81,7 +89,7 @@
 		</div>
 		<div class="conn-body">
 			<div class="activity-row reply" v-if="conn.state == 'active'">
-				<input type="text" class="form-input" name="send_message" placeholder="Send message .." size="40" @keyup.enter="sendMessage(conn.connection_id, $event.target)">
+				<input type="text" class="form-input" name="send_message" placeholder="Send message .." size="40" @keyup.enter="sendMessage(conn.connection_id, $event.target)" autocomplete="off">
 			</div>
 			<div :class="'activity-row ' + row.direction" v-for="row in conn.activity">
 				<div class="message" v-if="row.type == 'message'">
@@ -93,14 +101,14 @@
 				</div>
 				<div class="invitation" v-if="row.type == 'invitation'">
 					<span class="fa fa-envelope"></span>
-					{{ row.direction == 'sent'? 'Sent invitation' : 'Received invitation' }}
+					{{ row.direction == 'sent'? 'Generated invitation' : 'Received invitation' }}
 				</div>
 				<div class="request" v-if="row.type == 'request'">
-					<span class="fa fa-question-circle"></span>
+					<span class="fa fa-user-plus"></span>
 					{{ row.direction == 'sent'? 'Sent connection request' : 'Received connection request' }}
 				</div>
 				<div class="response" v-if="row.type == 'response'">
-					<span class="fa fa-plug"></span>
+					<span class="fa fa-user-check"></span>
 					{{ row.direction == 'sent'? 'Sent connection response' : 'Received connection response' }}
 				</div>
 				<div class="activity-time">
@@ -112,19 +120,8 @@
 			</div>
 		</div>
 	</div>
-	<div v-if="conn_error" class="conn-outer">
-		<div class="conn-body">
-			<div class="activity-row">
-				{{ conn_error }}
-			</div>
-		</div>
-	</div>
-	<div v-if="mode === 'connections' && ! connections.length" class="conn-outer">
-		<div class="conn-body">
-			<div class="activity-row">
-				No connection records.
-			</div>
-		</div>
+	<div v-if="mode === 'connections' && ! connections.length && conn_status" class="conn-alert">
+		No connection records.
 	</div>
 </div>
 

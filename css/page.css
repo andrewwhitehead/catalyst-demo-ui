@@ -1,6 +1,7 @@
 body {
 	color: #333;
-	font-family: Montserrat Alternates;
+	font-family: Montserrat;
+	padding-bottom: 20px;
 }
 .app-header {
 	display: flex;
@@ -8,6 +9,13 @@ body {
 }
 .app-header div {
 	flex: auto;
+}
+.app-header .icon {
+	flex: 0 0 5em;
+}
+.app-header .icon img {
+	margin-top: -4px;
+	width: 60px;
 }
 .app-header .mini {
 	flex: 0 0 10em;
@@ -29,8 +37,9 @@ body {
 .form-input {
 	border: 1px solid #334;
 	border-radius: 3px;
-	font-family: Montserrat Alternates;
+	font-family: Montserrat;
 	font-size: 18px;
+	max-width: 100%;
 	padding: 5px 0 5px 5px;
 }
 .invitation-url {
@@ -41,7 +50,7 @@ body {
 	word-break: break-word;
 }
 .form-group {
-	margin-bottom: 10px;
+	margin-bottom: 15px;
 }
 .form-label {
 	display: block;
@@ -49,10 +58,21 @@ body {
 	line-height: 1.5;
 }
 .conn-outer {
-	border-radius: 8px;
+	border-radius: 6px;
 	border: 1.5px solid #999;
 	margin: 15px;
 	padding: 2px 2px 10px;
+}
+.conn-alert {
+	border-radius: 6px;
+	border: 1.5px solid #999;
+	margin: 15px;
+	padding: 15px;
+}
+.conn-alert.error {
+	border-color: #e88;
+	background: #ecc;
+	color: #533;
 }
 .conn-head {
 	display: flex;
@@ -117,10 +137,10 @@ body {
 .conn-action {
 	background: #fff;
 	border-radius: 5px;
-	border: 2px solid #45f;
-	color: #45f;
+	border: 2px solid #45e;
+	color: #45e;
 	cursor: pointer;
-	font-family: Montserrat Alternates;
+	font-family: Montserrat;
 	font-size: 14px;
 	font-weight: 600;
 	padding: 8px 12px;
@@ -129,4 +149,9 @@ body {
 .conn-action.cancel {
 	border-color: #666;
 	color: #666;
+}
+.invitation-qr {
+	height: auto;
+	width: 200px;
+	max-width: 40%;
 }
