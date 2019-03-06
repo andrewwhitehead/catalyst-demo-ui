@@ -93,7 +93,7 @@ var app = new Vue({
 			this.resync();
 		},
 		addConnection (conn) {
-			this.setConnectionImage(conn);
+			this.expandConnection(conn);
 			this.connections.push(conn);
 		},
 		updateConnection (conn) {
@@ -106,16 +106,22 @@ var app = new Vue({
 				for(var k in conn) {
 					found[k] = conn[k];
 				}
-				this.setConnectionImage(found);
+				this.expandConnection(found);
 			}
 			return found;
 		},
-		setConnectionImage (conn) {
+		expandConnection (conn) {
 			if(conn.connection_id && ! conn.image) {
 				var image = new Identicon(conn.connection_id, { format: 'svg', size: 84 });
 				var rgbColor = image.foreground;
 				conn.color = formatColor(rgbColor);
 				conn.image = 'data:image/svg+xml;base64,' + image.toString();
+			}
+			conn.activity_count = 0;
+			if(conn.activity) {
+				for(var idx = 0; idx < conn.activity.length; idx++)
+					if(conn.activity[idx].type === 'message')
+						conn.activity_count ++;
 			}
 		},
 		resync () {
@@ -180,6 +186,19 @@ var app = new Vue({
 					});
 				});
 			});
+		},
+		showDetail (conn_id) {
+			var found;
+			for(var idx = 0; idx < this.connections.length; idx ++) {
+				if(this.connections[idx].connection_id === conn_id) {
+					found = this.connections[idx];
+					break;
+				}
+			}
+			if(found) {
+				this.conn_detail = found;
+				this.mode = "connection_detail";
+			}
 		},
 		showGenerate () {
 			this.mode = "generate_invite";
