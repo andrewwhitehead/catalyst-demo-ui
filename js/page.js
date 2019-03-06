@@ -59,6 +59,7 @@ var app = new Vue({
 	data: {
 		app_url: "http://localhost:5000",
 		connections: [],
+		conn_error: '',
 		input_invite_url: '',
 		mode: "settings",
 		recvd_invite_url: '',
@@ -119,7 +120,12 @@ var app = new Vue({
 			this.socket.onmessage = function(event) {
 				self.receiveMessage(JSON.parse(event.data));
 			}
-			this.fetchConnections();
+			this.socket.onopen = function(event) {
+				self.fetchConnections();
+			}
+			this.socket.onerror = function(err) {
+				self.conn_error = "Connection failed.";
+			}
 		},
 		receiveMessage (msg) {
 			console.log("received message: ", msg);
