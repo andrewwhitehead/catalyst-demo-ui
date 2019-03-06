@@ -20,9 +20,17 @@
 
 <div id="app-outer" class="app-outer" style="display: none" v-show="true">
 	<div class="app-header" v-if="mode === 'connections'">
-		<button class="conn-action" @click.prevent="showSettings">Settings</button>
-		<button class="conn-action" @click.prevent="showGenerate">Generate Invitation</button>
-		<button class="conn-action" @click.prevent="showReceive">Receive Invitation</button>
+		<div>
+			<button class="conn-action" @click.prevent="showGenerate">Generate Invitation</button>
+			<button class="conn-action" @click.prevent="showReceive">Receive Invitation</button>
+		</div>
+		<div class="right">
+			<h3>{{ app_label }}</h3>
+			<p>{{ app_endpoint }}</p>
+		</div>
+		<div class="mini">
+			<button class="conn-action" @click.prevent="showSettings">Configure</button>
+		</div>
 	</div>
 	<div class="form-outer" v-if="mode === 'settings'">
 		<form @submit.prevent="showConnections()">

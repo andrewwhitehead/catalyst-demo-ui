@@ -3,7 +3,25 @@ body {
 	font-family: Montserrat Alternates;
 }
 .app-header {
+	display: flex;
 	margin: 25px 15px;
+}
+.app-header div {
+	flex: auto;
+}
+.app-header .mini {
+	flex: 0 0 10em;
+	text-align: right;
+}
+.app-header .right {
+	text-align: right;
+}
+.app-header h3 {
+	font-size: 20px;
+	margin: 0 0 5px 0;
+}
+.app-header p {
+	margin: 0 0 5px 0;
 }
 .form-outer {
 	padding: 15px;

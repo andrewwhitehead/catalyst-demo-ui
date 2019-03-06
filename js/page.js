@@ -58,6 +58,8 @@ var app = new Vue({
 	el: '#app-outer',
 	data: {
 		app_url: "http://localhost:5000",
+		app_label: '',
+		app_endpoint: '',
 		connections: [],
 		conn_error: '',
 		input_invite_url: '',
@@ -133,6 +135,10 @@ var app = new Vue({
 				var conn = msg.context.connection;
 				if(! this.updateConnection(conn))
 					this.addConnection(conn);
+			}
+			else if(msg.type == "settings") {
+				this.app_label = msg.context.label;
+				this.app_endpoint = msg.context.endpoint;
 			}
 		},
 		fetchConnections () {
