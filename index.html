@@ -104,6 +104,13 @@
 			</div>
 		</div>
 	</div>
+	<div v-if="mode === 'connections' && ! connections.length" class="conn-outer">
+		<div class="conn-body">
+			<div class="activity-row">
+				No connection records.
+			</div>
+		</div>
+	</div>
 </div>
 
 <script src="js/identicon.js"></script>	
