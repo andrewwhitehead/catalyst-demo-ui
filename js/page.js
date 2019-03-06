@@ -70,6 +70,15 @@ var app = new Vue({
 		// TEST_CONNECTIONS.forEach(conn => this.addConnection(conn));
 		// this.showConnections();
 	},
+	filters: {
+		formatDate: function (value) {
+			if(! value) return '';
+			var options = {
+				weekday: 'short', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric'
+			};
+			return new Date(value).toLocaleString('en-US', options);
+		}
+	},
 	methods: {
 		showSettings() {
 			this.mode = "settings";

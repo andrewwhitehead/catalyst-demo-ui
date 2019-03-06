@@ -68,12 +68,12 @@
 			<div class="conn-actions">
 				<button type="button" class="conn-action" v-if="conn.state == 'invitation' && conn.initiator == 'external'" @click.prevent="acceptInvite(conn.connection_id)">Accept Invitation</button>
 				<button type="button" class="conn-action" v-if="conn.state == 'request' && conn.initiator == 'self'" @click.prevent="acceptRequest(conn.connection_id)">Accept Request</button>
+				<button type="button" class="conn-action" v-if="conn.state == 'active'" @click.prevent="sendPing(conn.connection_id)">Send Trust Ping</button>
 			</div>
 		</div>
 		<div class="conn-body">
 			<div class="activity-row reply" v-if="conn.state == 'active'">
-				<input type="text" class="form-input" name="send_message" placeholder="Send message .." size="30" @keyup.enter="sendMessage(conn.connection_id, $event.target)">
-				&nbsp;&nbsp;<button type="button" class="conn-action" @click.prevent="sendPing(conn.connection_id)">Send Trust Ping</button>
+				<input type="text" class="form-input" name="send_message" placeholder="Send message .." size="40" @keyup.enter="sendMessage(conn.connection_id, $event.target)">
 			</div>
 			<div :class="'activity-row ' + row.direction" v-for="row in conn.activity">
 				<div class="message" v-if="row.type == 'message'">
@@ -99,7 +99,7 @@
 					<span v-if="row.type != 'ping' && row.type != 'invitation'">
 						{{ row.direction == 'sent'? 'Sent' : 'Received' }}
 					</span>
-					{{ row.time }}
+					{{ row.time | formatDate }}
 				</div>
 			</div>
 		</div>
