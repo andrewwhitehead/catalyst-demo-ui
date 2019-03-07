@@ -25,8 +25,10 @@
 			<img src="img/secret-agent.svg" alt="Agent">
 		</div>
 		<div>
-			<h3>{{ app_label }}</h3>
-			<p>{{ app_endpoint }}</p>
+			<template v-if="conn_status">
+				<h3>{{ app_label }}</h3>
+				<p>{{ app_endpoint }}</p>
+			</template>
 		</div>
 		<div class="right">
 			<template v-if="conn_status">
