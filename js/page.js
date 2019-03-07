@@ -137,7 +137,14 @@ var app = new Vue({
 					self.socket.close();
 				}, 15000);
 			}
-			this.socket = new WebSocket(this.app_url.replace(/^https?:/, "ws:") + "/ws");
+			var socket_url = this.app_url.replace(/^https:/, "wss:").replace(/^http:/, "ws:") + "/ws";
+			try {
+				this.socket = new WebSocket(socket_url);
+			} catch(e) {
+				self.conn_error = "Connection failed.";
+				self.conn_status = false;
+				return;
+			}
 			this.socket.onmessage = function(event) {
 				heartbeat();
 				self.receiveMessage(JSON.parse(event.data));
