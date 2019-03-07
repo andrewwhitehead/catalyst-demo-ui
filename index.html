@@ -20,7 +20,7 @@
 <body>
 
 <div id="app-outer" class="app-outer" style="display: none" v-show="true">
-	<div class="app-header" v-if="mode !== 'settings'">
+	<div class="app-header">
 		<div class="icon">
 			<img src="img/secret-agent.svg" alt="Agent">
 		</div>
@@ -42,7 +42,9 @@
 			</template>
 		</div>
 		<div class="mini">
-			<button class="conn-action" @click.prevent="showSettings"><span class="fa fa-cogs"></span> Configure</button>
+			<template v-if="mode !== 'settings'">
+				<button class="conn-action" @click.prevent="showSettings"><span class="fa fa-cogs"></span> Configure</button>
+			</template>
 		</div>
 	</div>
 	<div class="form-outer" v-if="mode === 'settings'">
