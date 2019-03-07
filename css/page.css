@@ -4,9 +4,18 @@ body {
 	margin: 0;
 	padding-bottom: 40px;
 }
+.title {
+	border-bottom: 1px solid #aaa;
+	color: #555;
+	padding-bottom: 4px;
+	margin: 10px 15px 10px;
+}
 .app-header {
+	background: #f0f0f0;
+	border-bottom: 1px solid #ddd;
 	display: flex;
-	margin: 25px 15px;
+	margin-bottom: 25px;
+	padding: 20px 15px 15px;
 }
 .app-header div {
 	flex: auto;
@@ -62,8 +71,9 @@ body {
 	margin: 0 15px;
 }
 .conn-list {
-	border-radius: 6px;
-	border: 1.5px solid #bbb;
+}
+.conn-list .avatar {
+	width: 40px;
 }
 .conn-list .conn-did {
 	margin-top: 15px;
@@ -80,7 +90,9 @@ body {
 .activity-count {
 	color: #567;
 	font-size: 20px;
-	margin-top: 15px;
+	margin-right: 10px;
+	position: relative;
+	top: -10px;
 }
 .activity-count .fa {
 	color: #789;
@@ -90,8 +102,6 @@ body {
 	margin: 0 15px;
 }
 .conn-detail {
-	border-radius: 6px;
-	border: 1.5px solid #999;
 	margin: 15px 0;
 	padding: 2px 2px;
 }
@@ -111,12 +121,15 @@ body {
 	padding: 10px;
 }
 .conn-info {
-	flex: auto;
+	flex: 1 1 30%;
 	padding-left: 15px;
 	word-break: break-word;
 }
 .conn-label {
 	margin: 10px 0 8px;
+}
+.conn-detail .conn-label {
+	margin-top: 0;
 }
 .conn-did {
 	color: #666;
@@ -154,16 +167,11 @@ body {
 .received .message {
 	background: #9eb;
 }
-.invitation, .request, .response {
-	padding: 5px 10px;
-}
-.ping {
-	background: #ccc;
-	border-radius: 10px;
+.ping, .invitation, .request, .response {
 	padding: 5px 10px;
 }
 .conn-actions {
-	flex: 0 0 25%;
+	flex: 0 0 30%;
 	text-align: right;
 }
 .conn-action {
@@ -175,12 +183,31 @@ body {
 	font-family: Montserrat;
 	font-size: 14px;
 	font-weight: 600;
+	margin-bottom: 4px;
+	outline: none;
 	padding: 8px 12px;
 	vertical-align: bottom;
+}
+.conn-action .fa {
+	margin-right: 3px;
+}
+.conn-action:not(:hover):not(:focus) .fa {
+	color: #56e;
+}
+.conn-action:hover {
+	box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
+}
+.conn-action:hover, .conn-action:focus {
+	border-color: #23c;
+	color: #23c;
 }
 .conn-action.cancel {
 	border-color: #666;
 	color: #666;
+}
+.conn-action.cancel:hover, .conn-action.cancel:focus {
+	border-color: #444;
+	color: #444;
 }
 .invitation-qr {
 	height: auto;
