@@ -110,6 +110,10 @@ var app = new Vue({
 			}
 			return found;
 		},
+		mergeConnection (conn) {
+			if(! this.updateConnection(conn))
+				this.addConnection(conn);
+		},
 		expandConnection (conn) {
 			if(conn.connection_id && ! conn.image) {
 				var image = new Identicon(conn.connection_id, { format: 'svg', size: 84 });
@@ -162,9 +166,7 @@ var app = new Vue({
 				// no action
 			}
 			else if(msg.type === "connection_update") {
-				var conn = msg.context.connection;
-				if(! this.updateConnection(conn))
-					this.addConnection(conn);
+				this.mergeConnection(msg.context.connection);
 			}
 			else if(msg.type == "settings") {
 				this.app_label = msg.context.label;
@@ -253,7 +255,12 @@ var app = new Vue({
 						body: invite_text
 					}).then(function(response) {
 						if(response.ok) response.json().then(function(data) {
-							self.showConnections();
+							if(data.connection_id) {
+								self.mergeConnection(data);
+								self.showDetail(data.connection_id);
+							} else {
+								self.showConnections();
+							}
 						});
 					});
 				}

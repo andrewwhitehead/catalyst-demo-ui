@@ -55,7 +55,7 @@ body {
 .invitation-url {
 	border: 1px solid #889;
 	border-radius: 3px;
-	font-size: 18px;
+	font-size: 14px;
 	padding: 5px 0 5px 5px;
 	word-break: break-word;
 }
@@ -212,5 +212,18 @@ body {
 .invitation-qr {
 	height: auto;
 	width: 200px;
-	max-width: 40%;
+	max-width: 100%;
+}
+
+@media screen and (min-width: 800px) {
+	.invitation-outer {
+		display: flex;
+	}
+	.invitation-qr-outer {
+		flex: 1 1 25%;
+	}
+	.invitation-url-outer {
+		flex: 1 1 75%;
+		padding-right: 2em;
+	}
 }
