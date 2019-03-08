@@ -57,8 +57,8 @@ var TEST_CONNECTIONS = [
 var app = new Vue({
 	el: '#app-outer',
 	data: {
-		autoconnect: false,
-		app_url: "http://localhost:5000",
+		autoconnect: true,
+		app_url: "http://agentbook.vonx.io:5000",
 		app_label: '',
 		app_endpoint: '',
 		connections: [],
@@ -257,23 +257,37 @@ var app = new Vue({
 		},
 		copyInvite () {
 			var self = this;
-			navigator.permissions.query({name: "clipboard-write"}).then(function(result) {
-			  	if(result.state == "granted" || result.state == "prompt") {
-					navigator.clipboard.writeText(self.recvd_invite_url);
-			  	}
-			});
+			var invite = document.getElementById('invitation-url');
+			if(invite) {
+				invite.focus();
+				invite.select();
+				var result = document.execCommand('copy');
+				if(result === 'unsuccessful') {
+					console.error('Failed to copy invitation.');
+				}
+			}
 		},
 		copyMessage (conn_id, row) {
 			var self = this;
-			navigator.permissions.query({name: "clipboard-write"}).then(function(result) {
-			  	if(result.state == "granted" || result.state == "prompt") {
-					navigator.clipboard.writeText(row.meta.content);
-					fetch(self.app_url + "/connections/" + conn_id + "/expire-message/" + row.id, {
-						cache: "no-cache",
-						method: "POST"
-					});
-			  	}
-			});
+			var input = document.createElement('input');			
+			input.style.visibility = 'none';
+			input.style.position = 'absolute';
+			input.style.left = '-9999px';
+			input.style.top = window.scrollY + 100 + 'px';
+			input.value = row.meta.content;
+			document.body.appendChild(input);
+			input.focus();
+			input.select();
+			var result = document.execCommand('copy');
+			if(result === 'unsuccessful') {
+				console.error('Failed to copy invitation.');
+			} else {
+				fetch(self.app_url + "/connections/" + conn_id + "/expire-message/" + row.id, {
+					cache: "no-cache",
+					method: "POST"
+				});
+			}
+			document.body.removeChild(input);
 		},
 		showReceive () {
 			this.mode = "receive_invite";

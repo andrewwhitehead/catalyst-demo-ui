@@ -55,8 +55,10 @@ body {
 .invitation-url {
 	border: 1px solid #889;
 	border-radius: 3px;
-	font-size: 14px;
+	font-family: Montserrat;
+	font-size: 16px;
 	padding: 5px 0 5px 5px;
+	width: 100%;
 	word-break: break-word;
 }
 .form-group {
