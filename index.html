@@ -49,7 +49,7 @@
 	</div>
 	<div class="form-outer" v-if="mode === 'settings'">
 		<h2 class="title">Configure Admin Client</h2>
-		<form @submit.prevent="showConnections()" class="form-outer">
+		<form @submit.prevent="showConnections(true)" class="form-outer">
 			<div class="form-group">
 				<label class="form-label">Agent URL</label>
 				<input type="url" class="form-input" name="app_url" v-model="app_url" size="60">
