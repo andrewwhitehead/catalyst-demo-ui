@@ -105,6 +105,9 @@
 						<p class="conn-did identifier" v-if="conn.their_did">{{ conn.their_did }}</p>
 					</div>
 					<div class="conn-actions">
+						<span class="activity-count" v-if="conn.invite_count">
+							<span class="fa fa-envelope"></span> {{ conn.invite_count }}
+						</span>
 						<span class="activity-count" v-if="conn.activity_count">
 							<span class="fa fa-comment"></span> {{ conn.activity_count }}
 						</span>

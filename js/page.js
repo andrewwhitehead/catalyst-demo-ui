@@ -142,10 +142,15 @@ var app = new Vue({
 				conn.image = 'data:image/svg+xml;base64,' + image.toString();
 			}
 			conn.activity_count = 0;
+			conn.invite_count = 0;
 			if(conn.activity) {
-				for(var idx = 0; idx < conn.activity.length; idx++)
-					if(conn.activity[idx].type === 'message')
+				for(var idx = 0; idx < conn.activity.length; idx++) {
+					if(conn.activity[idx].type === 'message') {
 						conn.activity_count ++;
+						if(conn.activity[idx].meta.copy_invite && ! conn.activity[idx].meta.copied)
+							conn.invite_count ++;
+					}
+				}
 			}
 		},
 		resync () {
