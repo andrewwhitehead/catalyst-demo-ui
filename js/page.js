@@ -57,7 +57,7 @@ var TEST_CONNECTIONS = [
 var app = new Vue({
 	el: '#app-outer',
 	data: {
-		autoconnect: true,
+		autoconnect: false,
 		app_url: "http://localhost:5000",
 		app_label: '',
 		app_endpoint: '',
