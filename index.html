@@ -34,7 +34,7 @@
 			<template v-if="conn_status">
 				<template v-if="mode === 'connections'">
 					<button class="conn-action" @click.prevent="showGenerate"><span class="fa fa-envelope"></span> Generate Invitation</button>
-					<button class="conn-action" @click.prevent="showReceive"><span class="fa fa-envelope-open-text"></span> Receive Invitation</button>
+					<button class="conn-action" @click.prevent="showReceive" :disabled="no_receive"><span class="fa fa-envelope-open-text"></span> Receive Invitation</button>
 				</template>
 				<template v-else>
 					<button class="conn-action" @click.prevent="showConnections"><span class="fa fa-list-alt"></span> All Connections</button>
@@ -82,7 +82,7 @@
 				</div>
 			</div>
 			<button type="button" class="conn-action" @click.prevent="copyInvite"><span class="fa fa-clipboard"></span> Copy Invitation</button>
-			<button type="button" class="conn-action cancel" @click.prevent="showConnections">Done</button>
+			<button type="button" class="conn-action cancel" @click.prevent="showDetail(recvd_invite_id)">Done</button>
 		</div>
 	</div>
 	<div v-if="mode !== 'settings' && conn_error" class="conn-alert error">

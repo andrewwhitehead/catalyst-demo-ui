@@ -62,11 +62,14 @@ var app = new Vue({
 		app_label: '',
 		app_endpoint: '',
 		connections: [],
+		conn_detail_id: null,
 		conn_status: null,
 		conn_error: '',
 		input_invite_url: '',
 		mode: "settings",
+		no_receive: false,
 		ping_timeout: null,
+		recvd_invite_id: null,
 		recvd_invite_url: '',
 		socket: null
 	},
@@ -87,29 +90,43 @@ var app = new Vue({
 			return new Date(value).toLocaleString('en-US', options);
 		}
 	},
+	computed: {
+		conn_detail() {
+			if(this.conn_detail_id) {
+				var found_idx = this.findConnection(this.conn_detail_id);
+				if(found_idx !== null)
+					return this.connections[found_idx];
+			}
+		}
+	},
 	methods: {
 		showSettings() {
 			this.mode = "settings";
 		},
 		showConnections() {
 			this.mode = "connections";
-			this.resync();
+			if(! this.conn_status)
+				this.resync();
 		},
 		addConnection (conn) {
 			this.expandConnection(conn);
 			this.connections.push(conn);
 		},
-		updateConnection (conn) {
-			var found;
+		findConnection (conn_id) {
 			for(var idx = 0; idx < this.connections.length; idx ++) {
-				if(this.connections[idx].connection_id === conn.connection_id)
-					found = this.connections[idx];
+				if(this.connections[idx].connection_id === conn_id)
+					return idx;
 			}
-			if(found) {
-				for(var k in conn) {
+			return null;
+		},
+		updateConnection (conn) {
+			var found_idx = this.findConnection(conn.connection_id), found;
+			if(found_idx !== null) {
+				found = Object.assign({}, this.connections[found_idx]);
+				for(var k in conn)
 					found[k] = conn[k];
-				}
 				this.expandConnection(found);
+				this.$set(this.connections, found_idx, found);
 			}
 			return found;
 		},
@@ -181,10 +198,15 @@ var app = new Vue({
 			else if(msg.type == "settings") {
 				this.app_label = msg.context.label;
 				this.app_endpoint = msg.context.endpoint;
+				this.no_receive = !! msg.context.no_receive_invites;
 			}
 		},
 		fetchConnections () {
 			var self = this;
+			if(this.mode == "connection_detail") {
+				this.mode = "connections";
+				this.conn_detail_id = null;
+			}
 			fetch(this.app_url + "/connections", {
 				cache: "no-cache",
 				headers: {
@@ -200,15 +222,9 @@ var app = new Vue({
 			});
 		},
 		showDetail (conn_id) {
-			var found;
-			for(var idx = 0; idx < this.connections.length; idx ++) {
-				if(this.connections[idx].connection_id === conn_id) {
-					found = this.connections[idx];
-					break;
-				}
-			}
-			if(found) {
-				this.conn_detail = found;
+			var found_idx = this.findConnection(conn_id);
+			if(found_idx !== null) {
+				this.conn_detail_id = conn_id;
 				this.mode = "connection_detail";
 			}
 		},
@@ -223,6 +239,7 @@ var app = new Vue({
 				method: "POST"
 			}).then(function(response) {
 				if(response.ok) response.json().then(function(data) {
+					self.recvd_invite_id = data.connection_id;
 					self.recvd_invite_url = data.invitation_url;
 					var canvas = document.getElementById('invitation-qr');
 					var qr = new QRious({
@@ -249,10 +266,6 @@ var app = new Vue({
 					fetch(self.app_url + "/connections/" + conn_id + "/expire-message/" + row.id, {
 						cache: "no-cache",
 						method: "POST"
-					}).then(function(response) {
-						if(response.ok) response.json().then(function(data) {
-							console.log("expired message:", data);
-						});
 					});
 			  	}
 			});

@@ -205,13 +205,13 @@ body {
 .conn-action .fa {
 	margin-right: 3px;
 }
-.conn-action:not(:hover):not(:focus) .fa {
+.conn-action:not(:disabled):not(:hover):not(:focus) .fa {
 	color: #56e;
 }
-.conn-action:hover {
+.conn-action:not(:disabled):hover {
 	box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
 }
-.conn-action:hover, .conn-action:focus {
+.conn-action:not(:disabled):hover, .conn-action:not(:disabled):focus {
 	border-color: #23c;
 	color: #23c;
 }
@@ -219,9 +219,13 @@ body {
 	border-color: #666;
 	color: #666;
 }
-.conn-action.cancel:hover, .conn-action.cancel:focus {
+.conn-action.cancel:not(:disabled):hover, .conn-action.cancel:not(:disabled):focus {
 	border-color: #444;
 	color: #444;
+}
+.conn-action:disabled {
+	border-color: #aaa;
+	color: #aaa;
 }
 .invitation-qr {
 	height: auto;
