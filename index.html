@@ -33,18 +33,19 @@
 		<div class="right">
 			<template v-if="conn_status">
 				<template v-if="mode === 'connections'">
-					<button class="conn-action" @click.prevent="showGenerate"><span class="fa fa-envelope"></span> Generate Invitation</button>
-					<button class="conn-action" @click.prevent="showReceive" :disabled="no_receive"><span class="fa fa-envelope-open-text"></span> Receive Invitation</button>
+					<button class="conn-action" @click.prevent="showGenerate"><span class="fa fa-md fa-envelope"></span> Generate Invitation</button>
+					<button class="conn-action" @click.prevent="showReceive" :disabled="no_receive"><span class="fa fa-md fa-envelope-open-text"></span> Receive Invitation</button>
 				</template>
 				<template v-else>
-					<button class="conn-action" @click.prevent="showConnections"><span class="fa fa-list-alt"></span> All Connections</button>
+					<button class="conn-action" @click.prevent="showConnections"><span class="fa fa-md fa-list-alt"></span> All Connections</button>
 				</template>
 			</template>
 		</div>
 		<div class="mini">
 			<template v-if="mode !== 'settings'">
-				<button class="conn-action" @click.prevent="showSettings"><span class="fa fa-cogs"></span> Configure</button>
+				<button class="conn-action" @click.prevent="showSettings"><span class="fa fa-md fa-cogs"></span> Configure</button>
 			</template>
+			<a :href="help_link" class="conn-action" target="_blank" rel="external" v-if="help_link"><span class="fa fa-md fa-question-circle"></span></a>
 		</div>
 	</div>
 	<div class="form-outer" v-if="mode === 'settings'">
@@ -54,7 +55,7 @@
 				<label class="form-label">Agent URL</label>
 				<input type="url" class="form-input" name="app_url" v-model="app_url" size="60">
 			</div>
-			<button type="submit" class="conn-action"><span class="fa fa-sign-in-alt"></span> Connect</button>
+			<button type="submit" class="conn-action"><span class="fa fa-md fa-sign-in-alt"></span> Connect</button>
 		</form>
 	</div>
 	<div class="form-outer" v-if="mode === 'receive_invite'">
@@ -64,7 +65,7 @@
 				<label class="form-label">Invitation URL</label>
 				<input type="url" class="form-input" id="invite_url" name="invite_url" placeholder="http://example.com?c_i=..." v-model="input_invite_url" size="60">
 			</div>
-			<button type="submit" class="conn-action"><span class="fa fa-envelope-open-text"></span> Receive Invitation</button>
+			<button type="submit" class="conn-action"><span class="fa fa-md fa-envelope-open-text"></span> Receive Invitation</button>
 			<button type="button" class="conn-action cancel" @click.prevent="showConnections">Cancel</button>
 		</form>
 	</div>
@@ -81,7 +82,7 @@
 					<canvas id="invitation-qr" class="invitation-qr"></canvas>
 				</div>
 			</div>
-			<button type="button" class="conn-action" @click.prevent="copyInvite"><span class="fa fa-clipboard"></span> Copy Invitation</button>
+			<button type="button" class="conn-action" @click.prevent="copyInvite"><span class="fa fa-md fa-clipboard"></span> Copy Invitation</button>
 			<button type="button" class="conn-action cancel" @click.prevent="showDetail(recvd_invite_id)">Done</button>
 		</div>
 	</div>
@@ -111,9 +112,9 @@
 						<span class="activity-count" v-if="conn.activity_count">
 							<span class="fa fa-comment"></span> {{ conn.activity_count }}
 						</span>
-						<button type="button" class="conn-action" v-if="conn.state == 'invitation' && conn.initiator == 'external'" @click.prevent="acceptInvite(conn.connection_id)"><span class="fa fa-user-plus"></span> Accept Invitation</button>
-						<button type="button" class="conn-action" v-if="conn.state == 'request' && conn.initiator == 'self'" @click.prevent="acceptRequest(conn.connection_id)"><span class="fa fa-user-check"></span> Accept Request</button>
-						<button type="button" class="conn-action" @click.prevent="showDetail(conn.connection_id)"><span class="fa fa-folder-open"></span> Details</button>
+						<button type="button" class="conn-action" v-if="conn.state == 'invitation' && conn.initiator == 'external'" @click.prevent="acceptInvite(conn.connection_id)"><span class="fa fa-md fa-user-plus"></span> Accept Invitation</button>
+						<button type="button" class="conn-action" v-if="conn.state == 'request' && conn.initiator == 'self'" @click.prevent="acceptRequest(conn.connection_id)"><span class="fa fa-md fa-user-check"></span> Accept Request</button>
+						<button type="button" class="conn-action" @click.prevent="showDetail(conn.connection_id)"><span class="fa fa-md fa-folder-open"></span> Details</button>
 					</div>
 				</div>
 			</div>
@@ -138,9 +139,9 @@
 					<p class="conn-did" v-if="conn_detail.created_at">Created: {{ conn_detail.created_at | formatDate }}</p>
 				</div>
 				<div class="conn-actions">
-					<button type="button" class="conn-action" v-if="conn_detail.state == 'invitation' && conn_detail.initiator == 'external'" @click.prevent="acceptInvite(conn_detail.connection_id)"><span class="fa fa-user-plus"></span> Accept Invitation</button>
-					<button type="button" class="conn-action" v-if="conn_detail.state == 'request' && conn_detail.initiator == 'self'" @click.prevent="acceptRequest(conn_detail.connection_id)"><span class="fa fa-user-check"></span> Accept Request</button>
-					<button type="button" class="conn-action" v-if="conn_detail.state == 'active'" @click.prevent="sendPing(conn_detail.connection_id)"><span class="fa fa-hand-point-left"></span> Send Trust Ping</button>
+					<button type="button" class="conn-action" v-if="conn_detail.state == 'invitation' && conn_detail.initiator == 'external'" @click.prevent="acceptInvite(conn_detail.connection_id)"><span class="fa fa-md fa-user-plus"></span> Accept Invitation</button>
+					<button type="button" class="conn-action" v-if="conn_detail.state == 'request' && conn_detail.initiator == 'self'" @click.prevent="acceptRequest(conn_detail.connection_id)"><span class="fa fa-md fa-user-check"></span> Accept Request</button>
+					<button type="button" class="conn-action" v-if="conn_detail.state == 'active'" @click.prevent="sendPing(conn_detail.connection_id)"><span class="fa fa-md fa-hand-point-left"></span> Send Trust Ping</button>
 				</div>
 			</div>
 			<div class="conn-body">
@@ -153,7 +154,7 @@
 							<span class="fa fa-lg fa-comment"></span> {{ row.meta.content }}
 						</div>
 						<div class="message-copy" v-if="row.meta.copy_invite">
-							<button type="button" class="conn-action copy-message" @click.prevent="copyMessage(conn_detail.connection_id, row)" v-if="! row.meta.copied"><span class="fa fa-clipboard"></span> Copy Invitation</button>
+							<button type="button" class="conn-action copy-message" @click.prevent="copyMessage(conn_detail.connection_id, row)" v-if="! row.meta.copied"><span class="fa fa-lg fa-clipboard"></span> Copy Invitation</button>
 							<span class="message-copied" v-else>Invitation copied.</span>
 						</div>
 					</div>

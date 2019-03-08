@@ -65,6 +65,7 @@ var app = new Vue({
 		conn_detail_id: null,
 		conn_status: null,
 		conn_error: '',
+		help_link: null,
 		input_invite_url: '',
 		mode: "settings",
 		no_receive: false,
@@ -203,6 +204,7 @@ var app = new Vue({
 			else if(msg.type == "settings") {
 				this.app_label = msg.context.label;
 				this.app_endpoint = msg.context.endpoint;
+				this.help_link = msg.context.help_link;
 				this.no_receive = !! msg.context.no_receive_invites;
 			}
 		},

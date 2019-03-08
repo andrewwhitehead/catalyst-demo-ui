@@ -28,7 +28,7 @@ body {
 	width: 60px;
 }
 .app-header .mini {
-	flex: 0 0 10em;
+	flex: 0 0 12em;
 	text-align: right;
 }
 .app-header .right {
@@ -141,6 +141,9 @@ body {
 .identifier {
 	font-variant-numeric: tabular-nums;
 }
+.fa-md {
+	font-size: 16px;
+}
 .activity-row {
 	font-size: 105%;
 	margin: 5px 15px;
@@ -197,6 +200,7 @@ body {
 	border: 2px solid #45e;
 	color: #45e;
 	cursor: pointer;
+	display: inline-block;
 	font-family: Montserrat;
 	font-size: 14px;
 	font-weight: 600;
