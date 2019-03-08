@@ -57,6 +57,7 @@ var TEST_CONNECTIONS = [
 var app = new Vue({
 	el: '#app-outer',
 	data: {
+		autoconnect: true,
 		app_url: "http://localhost:5000",
 		app_label: '',
 		app_endpoint: '',
@@ -73,7 +74,9 @@ var app = new Vue({
 	},
 	mounted: function() {
 		// TEST_CONNECTIONS.forEach(conn => this.addConnection(conn));
-		// this.showConnections();
+		if(this.autoconnect) {
+			this.showConnections();
+		}
 	},
 	filters: {
 		formatDate: function (value) {
@@ -235,6 +238,22 @@ var app = new Vue({
 			navigator.permissions.query({name: "clipboard-write"}).then(function(result) {
 			  	if(result.state == "granted" || result.state == "prompt") {
 					navigator.clipboard.writeText(self.recvd_invite_url);
+			  	}
+			});
+		},
+		copyMessage (conn_id, row) {
+			var self = this;
+			navigator.permissions.query({name: "clipboard-write"}).then(function(result) {
+			  	if(result.state == "granted" || result.state == "prompt") {
+					navigator.clipboard.writeText(row.meta.content);
+					fetch(self.app_url + "/connections/" + conn_id + "/expire-message/" + row.id, {
+						cache: "no-cache",
+						method: "POST"
+					}).then(function(response) {
+						if(response.ok) response.json().then(function(data) {
+							console.log("expired message:", data);
+						});
+					});
 			  	}
 			});
 		},

@@ -146,22 +146,28 @@
 				</div>
 				<div :class="'activity-row ' + row.direction" v-for="row in conn_detail.activity">
 					<div class="message" v-if="row.type == 'message'">
-						<span class="fa fa-comment"></span> {{ row.content }}
+						<div class="message-wrap">
+							<span class="fa fa-lg fa-comment"></span> {{ row.meta.content }}
+						</div>
+						<div class="message-copy" v-if="row.meta.copy_invite">
+							<button type="button" class="conn-action copy-message" @click.prevent="copyMessage(conn_detail.connection_id, row)" v-if="! row.meta.copied"><span class="fa fa-clipboard"></span> Copy Invitation</button>
+							<span class="message-copied" v-else>Invitation copied.</span>
+						</div>
 					</div>
 					<div class="ping" v-if="row.type == 'ping'">
-						<span :class="'fa fa-hand-point-' + (row.direction == 'sent' ? 'left' : 'right')"></span>
+						<span :class="'fa fa-lg fa-hand-point-' + (row.direction == 'sent' ? 'left' : 'right')"></span>
 						{{ row.direction == 'sent'? 'Sent trust ping' : 'Received trust ping' }}
 					</div>
 					<div class="invitation" v-if="row.type == 'invitation'">
-						<span :class="'fa fa-envelope' + (row.direction == 'received' ? '-open-text' : '')"></span>
+						<span :class="'fa fa-lg fa-envelope' + (row.direction == 'received' ? '-open-text' : '')"></span>
 						{{ row.direction == 'sent'? 'Generated invitation' : 'Received invitation' }}
 					</div>
 					<div class="request" v-if="row.type == 'request'">
-						<span class="fa fa-user-plus"></span>
+						<span class="fa fa-lg fa-user-plus"></span>
 						{{ row.direction == 'sent'? 'Sent connection request' : 'Received connection request' }}
 					</div>
 					<div class="response" v-if="row.type == 'response'">
-						<span class="fa fa-user-check"></span>
+						<span class="fa fa-lg fa-user-check"></span>
 						{{ row.direction == 'sent'? 'Sent connection response' : 'Received connection response' }}
 					</div>
 					<div class="activity-time">

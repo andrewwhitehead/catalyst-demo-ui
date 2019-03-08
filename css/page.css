@@ -146,7 +146,7 @@ body {
 .activity-row.reply {
 	margin-bottom: 20px;
 }
-.activity-row .fa {
+.activity-row .fa-lg {
 	font-size: 24px;
 	margin-right: 6px;
 	margin-top: -2px;
@@ -163,6 +163,20 @@ body {
 	border-radius: 10px;
 	color: #222;
 	padding: 5px 10px;
+}
+.message-wrap {
+	word-wrap: break-word;
+}
+.message-copy {
+	padding-top: 8px;
+}
+.message-copied {
+	background: #fff;
+	border-radius: 4px;
+	font-size: 80%;
+	font-weight: bold;
+	margin-bottom: 6px;
+	padding: 3px 6px;
 }
 .received .message {
 	background: #9eb;
