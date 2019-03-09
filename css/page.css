@@ -1,11 +1,12 @@
 body {
-	color: #333;
+	background: #EBF5F7;
+	color: #334;
 	font-family: Montserrat;
 	margin: 0;
 	padding-bottom: 40px;
 }
 .title {
-	border-bottom: 2px solid rgba(20, 70, 150, 0.2);
+	border-bottom: 2px solid rgba(20, 70, 150, 0.25);
 	color: #567;
 	padding: 4px 0;
 	margin: 15px 15px 20px;
@@ -63,7 +64,7 @@ body {
 	margin: 5px 15px 15px;
 }
 .form-input {
-	border: 1px solid #334;
+	border: 1px solid #789;
 	border-radius: 3px;
 	font-family: Montserrat;
 	font-size: 18px;
@@ -91,6 +92,8 @@ body {
 	margin: 0 15px;
 }
 .conn-list {
+	background: #fff;
+	border: 1px solid #bcd;
 	margin: 0 15px;
 }
 .conn-list .avatar {
@@ -127,6 +130,7 @@ body {
 	padding: 2px 2px;
 }
 .conn-alert {
+	background: #fff;
 	border-radius: 6px;
 	border: 1.5px solid #999;
 	margin: 15px;
@@ -139,7 +143,7 @@ body {
 }
 .conn-head {
 	display: flex;
-	padding: 10px;
+	margin: 10px;
 }
 .conn-info {
 	flex: 1 1 30%;
@@ -147,14 +151,27 @@ body {
 	word-break: break-word;
 }
 .conn-label {
+	text-shadow: 0 1px 1px rgba(0, 0, 50, 0.15);
 	margin: 10px 0 8px;
 }
 .conn-detail .conn-label {
 	margin-top: 0;
 }
+.conn-detail .conn-head {
+	background: #fff;
+	border: 1px solid #bcd;
+	padding: 10px;
+	margin-bottom: 20px;
+}
 .conn-did {
-	color: #666;
+	color: #556;
 	margin: 5px 0;
+}
+.conn-did .label {
+	font-weight: bold;
+	font-size: 95%;
+	display: inline-block;
+	min-width: 7em;
 }
 .identifier {
 	font-variant-numeric: tabular-nums;
@@ -240,6 +257,13 @@ body {
 	border-color: #25c;
 	color: #25c;
 }
+.conn-action.accept {
+	border-color: #398;
+	color: #398;
+}
+.conn-action.accept:not(:disabled):not(:hover):not(:focus) .fa {
+	color: #4a9;
+}
 .conn-action.cancel {
 	border-color: #666;
 	color: #666;
@@ -249,8 +273,10 @@ body {
 	color: #444;
 }
 .conn-action:disabled {
+	background: #f6f6f6;
 	border-color: #aaa;
 	color: #aaa;
+	cursor: default;
 }
 .invitation-qr {
 	height: auto;

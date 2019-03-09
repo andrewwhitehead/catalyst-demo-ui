@@ -63,6 +63,7 @@ var app = new Vue({
 		app_endpoint: '',
 		connections: [],
 		conn_detail_id: null,
+		conn_loading: false,
 		conn_status: null,
 		conn_error: '',
 		help_link: null,
@@ -166,10 +167,12 @@ var app = new Vue({
 				}, 15000);
 			}
 			var socket_url = this.app_url.replace(/^https:/, "wss:").replace(/^http:/, "ws:") + "/ws";
+			self.conn_loading = true;
 			try {
 				this.socket = new WebSocket(socket_url);
 			} catch(e) {
 				self.conn_error = "Connection failed.";
+				self.conn_loading = false;
 				self.conn_status = false;
 				return;
 			}
@@ -181,10 +184,12 @@ var app = new Vue({
 				heartbeat();
 				self.fetchConnections();
 				self.conn_error = null;
+				self.conn_loading = false;
 				self.conn_status = true;
 			}
 			this.socket.onerror = function(err) {
 				self.conn_error = "Connection failed.";
+				self.conn_loading = false;
 				self.conn_status = false;
 			}
 			this.socket.onclose = function(err) {
@@ -192,6 +197,7 @@ var app = new Vue({
 					self.conn_error = "Disconnected.";
 				else
 					self.conn_error = "Connection failed.";
+				self.conn_loading = false;
 				self.conn_status = false;
 			}
 		},

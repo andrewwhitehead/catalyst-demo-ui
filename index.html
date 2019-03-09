@@ -59,7 +59,7 @@
 				<label class="form-label">Agent URL</label>
 				<input type="url" class="form-input" name="app_url" v-model="app_url" size="60">
 			</div>
-			<button type="submit" class="conn-action"><span class="fa fa-md fa-sign-in-alt"></span> Connect</button>
+			<button type="submit" class="conn-action accept"><span class="fa fa-md fa-sign-in-alt"></span> Connect</button>
 		</form>
 	</div>
 	<div class="form-outer" v-if="mode === 'receive_invite'">
@@ -93,6 +93,9 @@
 	<div v-if="mode !== 'settings' && conn_error" class="conn-alert error">
 		{{ conn_error }}
 	</div>
+	<div v-if="conn_loading" class="conn-alert">
+		<span class="fa fa-hourglass-half"></span>&nbsp; Connecting ...
+	</div>
 	<div v-if="mode === 'connections' && conn_status" class="conn-list-outer">
 		<h2 class="title">All Connections</h2>
 		<div class="conn-list" v-if="connections.length">
@@ -116,8 +119,8 @@
 						<span class="activity-count" v-if="conn.activity_count">
 							<span class="fa fa-comment"></span> {{ conn.activity_count }}
 						</span>
-						<button type="button" class="conn-action" v-if="conn.state == 'invitation' && conn.initiator == 'external'" @click.prevent="acceptInvite(conn.connection_id)"><span class="fa fa-md fa-user-plus"></span> Accept Invitation</button>
-						<button type="button" class="conn-action" v-if="conn.state == 'request' && conn.initiator == 'self'" @click.prevent="acceptRequest(conn.connection_id)"><span class="fa fa-md fa-user-check"></span> Accept Request</button>
+						<button type="button" class="conn-action accept" v-if="conn.state == 'invitation' && conn.initiator == 'external'" @click.prevent="acceptInvite(conn.connection_id)"><span class="fa fa-md fa-user-plus"></span> Accept Invitation</button>
+						<button type="button" class="conn-action accept" v-if="conn.state == 'request' && conn.initiator == 'self'" @click.prevent="acceptRequest(conn.connection_id)"><span class="fa fa-md fa-user-check"></span> Accept Request</button>
 						<button type="button" class="conn-action" @click.prevent="showDetail(conn.connection_id)"><span class="fa fa-md fa-folder-open"></span> Details</button>
 					</div>
 				</div>
@@ -138,13 +141,13 @@
 					<h2 class="conn-label" :style="{ color: conn_detail.color }" v-if="conn_detail.their_label">{{ conn_detail.their_label }}</h2>
 					<h2 class="conn-label" :style="{ color: conn_detail.color }" v-else-if="conn_detail.state == 'invitation'">Pending Connection</h2>
 					<h2 class="conn-label" :style="{ color: conn_detail.color }" v-else>Connection</h2>
-					<p class="conn-did identifier" v-if="conn_detail.their_did">Their DID: {{ conn_detail.their_did }}</p>
-					<p class="conn-did identifier" v-if="conn_detail.my_did">My DID: {{ conn_detail.my_did }}</p>
-					<p class="conn-did" v-if="conn_detail.created_at">Created: {{ conn_detail.created_at | formatDate }}</p>
+					<p class="conn-did identifier" v-if="conn_detail.their_did"><span class="label">Their DID:</span> {{ conn_detail.their_did }}</p>
+					<p class="conn-did identifier" v-if="conn_detail.my_did"><span class="label">My DID:</span> {{ conn_detail.my_did }}</p>
+					<p class="conn-did" v-if="conn_detail.created_at"><span class="label">Created:</span> {{ conn_detail.created_at | formatDate }}</p>
 				</div>
 				<div class="conn-actions">
-					<button type="button" class="conn-action" v-if="conn_detail.state == 'invitation' && conn_detail.initiator == 'external'" @click.prevent="acceptInvite(conn_detail.connection_id)"><span class="fa fa-md fa-user-plus"></span> Accept Invitation</button>
-					<button type="button" class="conn-action" v-if="conn_detail.state == 'request' && conn_detail.initiator == 'self'" @click.prevent="acceptRequest(conn_detail.connection_id)"><span class="fa fa-md fa-user-check"></span> Accept Request</button>
+					<button type="button" class="conn-action accept" v-if="conn_detail.state == 'invitation' && conn_detail.initiator == 'external'" @click.prevent="acceptInvite(conn_detail.connection_id)"><span class="fa fa-md fa-user-plus"></span> Accept Invitation</button>
+					<button type="button" class="conn-action accept" v-if="conn_detail.state == 'request' && conn_detail.initiator == 'self'" @click.prevent="acceptRequest(conn_detail.connection_id)"><span class="fa fa-md fa-user-check"></span> Accept Request</button>
 					<button type="button" class="conn-action" v-if="conn_detail.state == 'active'" @click.prevent="sendPing(conn_detail.connection_id)"><span class="fa fa-md fa-hand-point-left"></span> Send Trust Ping</button>
 				</div>
 			</div>
