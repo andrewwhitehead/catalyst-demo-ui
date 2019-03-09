@@ -154,7 +154,7 @@
 							<span class="fa fa-lg fa-comment"></span> {{ row.meta.content }}
 						</div>
 						<div class="message-copy" v-if="row.meta.copy_invite">
-							<button type="button" class="conn-action copy-message" @click.prevent="copyMessage(conn_detail.connection_id, row)" v-if="! row.meta.copied"><span class="fa fa-lg fa-clipboard"></span> Copy Invitation</button>
+							<button type="button" class="conn-action copy-message" @click.prevent="copyMessage(conn_detail.connection_id, row)" v-if="! row.meta.copied"><span class="fa fa-md fa-clipboard"></span> Copy Invitation</button>
 							<span class="message-copied" v-else>Invitation copied.</span>
 						</div>
 					</div>
