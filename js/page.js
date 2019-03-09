@@ -107,7 +107,7 @@ var app = new Vue({
 		},
 		showConnections(resync) {
 			this.mode = "connections";
-			if(! this.conn_status || resync)
+			if(! this.conn_status || resync === true)
 				this.resync();
 		},
 		addConnection (conn) {
