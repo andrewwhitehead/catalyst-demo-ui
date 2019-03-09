@@ -146,10 +146,12 @@ var app = new Vue({
 			conn.invite_count = 0;
 			if(conn.activity) {
 				for(var idx = 0; idx < conn.activity.length; idx++) {
-					if(conn.activity[idx].type === 'message') {
+					if(conn.activity[idx].type === 'message' && conn.activity[idx].direction === 'received') {
 						conn.activity_count ++;
-						if(conn.activity[idx].meta.copy_invite && ! conn.activity[idx].meta.copied)
+						if(conn.activity[idx].meta.copy_invite && ! conn.activity[idx].meta.copied) {
 							conn.invite_count ++;
+							conn.activity_count --;
+						}
 					}
 				}
 			}
