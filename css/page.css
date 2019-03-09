@@ -5,16 +5,17 @@ body {
 	padding-bottom: 40px;
 }
 .title {
-	border-bottom: 1px solid #aaa;
-	color: #555;
-	padding-bottom: 4px;
-	margin: 10px 15px 10px;
+	border-bottom: 2px solid rgba(20, 70, 150, 0.2);
+	color: #567;
+	padding: 4px 0;
+	margin: 15px 15px 20px;
 }
 .app-header {
 	background: #f0f0f0;
-	border-bottom: 1px solid #ddd;
+	background: linear-gradient(to left, #dbf3e3, #e0eff3);
+	border-bottom: 2px solid #A8D1B5;
 	display: flex;
-	margin-bottom: 25px;
+	margin-bottom: 30px;
 	padding: 20px 15px 15px;
 }
 .app-header div {
@@ -42,7 +43,7 @@ body {
 	margin: 0 0 5px 0;
 }
 .form-outer {
-	padding: 15px;
+	margin: 5px 15px 15px;
 }
 .form-input {
 	border: 1px solid #334;
@@ -85,10 +86,10 @@ body {
 	padding: 2px 2px;
 }
 .conn-outer:not(:last-child)::after {
-	background: #ccc;
+	background: #bcd;
 	content: '';
 	display: block;
-	height: 2px;
+	height: 1px;
 }
 .activity-count {
 	color: #567;
@@ -197,8 +198,8 @@ body {
 .conn-action {
 	background: #fff;
 	border-radius: 5px;
-	border: 2px solid #45e;
-	color: #45e;
+	border: 2px solid #48e;
+	color: #48e;
 	cursor: pointer;
 	display: inline-block;
 	font-family: Montserrat;
@@ -213,14 +214,14 @@ body {
 	margin-right: 3px;
 }
 .conn-action:not(:disabled):not(:hover):not(:focus) .fa {
-	color: #56e;
+	color: #59e;
 }
 .conn-action:not(:disabled):hover {
 	box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
 }
 .conn-action:not(:disabled):hover, .conn-action:not(:disabled):focus {
-	border-color: #23c;
-	color: #23c;
+	border-color: #25c;
+	color: #25c;
 }
 .conn-action.cancel {
 	border-color: #666;
