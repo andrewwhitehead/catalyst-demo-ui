@@ -14,26 +14,43 @@ body {
 	background: #f0f0f0;
 	background: linear-gradient(to left, #dbf3e3, #e0eff3);
 	border-bottom: 2px solid #A8D1B5;
-	display: flex;
 	margin-bottom: 30px;
 	padding: 20px 15px 15px;
 }
 .app-header div {
 	flex: auto;
 }
-.app-header .icon {
+.app-header .app-icon {
 	flex: 0 0 5em;
 }
-.app-header .icon img {
+.app-header .app-icon img {
 	margin-top: -4px;
 	width: 60px;
 }
-.app-header .mini {
-	flex: 0 0 12em;
-	text-align: right;
+.app-header .app-info {
+	word-break: break-word;
+}
+.app-header .left, .app-header .right {
+	display: flex;
+}
+.app-header .left {
+	flex: 1 0 auto;
+	min-width: 22em;
 }
 .app-header .right {
-	text-align: right;
+	flex: 0 1 auto;
+}
+.app-header .invites {
+	flex: 1 1 auto;
+	padding-left: 10px;
+	padding-top: 6px;
+	text-align: center;
+}
+.app-header .system {
+	flex: 1 0 auto;
+	padding-left: 10px;
+	padding-top: 6px;
+	text-align: center;
 }
 .app-header h3 {
 	font-size: 20px;
@@ -251,5 +268,8 @@ body {
 	.invitation-url-outer {
 		flex: 1 1 75%;
 		padding-right: 2em;
+	}
+	.app-header {
+		display: flex;
 	}
 }

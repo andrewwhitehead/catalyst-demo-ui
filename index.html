@@ -21,31 +21,35 @@
 
 <div id="app-outer" class="app-outer" style="display: none" v-show="true">
 	<div class="app-header">
-		<div class="icon">
-			<img src="img/secret-agent.svg" alt="Agent">
-		</div>
-		<div>
-			<template v-if="conn_status">
-				<h3>{{ app_label }}</h3>
-				<p>{{ app_endpoint }}</p>
-			</template>
+		<div class="left">
+			<div class="app-icon">
+				<img src="img/secret-agent.svg" alt="Agent">
+			</div>
+			<div class="app-info">
+				<template v-if="conn_status">
+					<h3>{{ app_label }}</h3>
+					<p>{{ app_endpoint }}</p>
+				</template>
+			</div>
 		</div>
 		<div class="right">
-			<template v-if="conn_status">
-				<template v-if="mode === 'connections'">
-					<button class="conn-action" @click.prevent="showGenerate"><span class="fa fa-md fa-envelope"></span> Generate Invitation</button>
-					<button class="conn-action" @click.prevent="showReceive" :disabled="no_receive"><span class="fa fa-md fa-envelope-open-text"></span> Receive Invitation</button>
+			<div class="invites">
+				<template v-if="conn_status">
+					<template v-if="mode === 'connections'">
+						<button class="conn-action" @click.prevent="showGenerate"><span class="fa fa-md fa-envelope"></span> Generate Invitation</button>
+						<button class="conn-action" @click.prevent="showReceive" :disabled="no_receive"><span class="fa fa-md fa-envelope-open-text"></span> Receive Invitation</button>
+					</template>
+					<template v-else>
+						<button class="conn-action" @click.prevent="showConnections"><span class="fa fa-md fa-list-alt"></span> All Connections</button>
+					</template>
 				</template>
-				<template v-else>
-					<button class="conn-action" @click.prevent="showConnections"><span class="fa fa-md fa-list-alt"></span> All Connections</button>
+			</div>
+			<div class="system">
+				<template v-if="mode !== 'settings'">
+					<button class="conn-action" @click.prevent="showSettings"><span class="fa fa-md fa-cogs"></span> Configure</button>
 				</template>
-			</template>
-		</div>
-		<div class="mini">
-			<template v-if="mode !== 'settings'">
-				<button class="conn-action" @click.prevent="showSettings"><span class="fa fa-md fa-cogs"></span> Configure</button>
-			</template>
-			<a :href="help_link" class="conn-action" target="_blank" rel="external" v-if="help_link"><span class="fa fa-md fa-question-circle"></span></a>
+				<a :href="help_link" class="conn-action" target="_blank" rel="external" v-if="help_link"><span class="fa fa-md fa-question-circle"></span></a>
+			</div>
 		</div>
 	</div>
 	<div class="form-outer" v-if="mode === 'settings'">
