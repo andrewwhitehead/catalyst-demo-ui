@@ -86,7 +86,7 @@
 					<canvas id="invitation-qr" class="invitation-qr"></canvas>
 				</div>
 			</div>
-			<button type="button" class="conn-action" @click.prevent="copyInvite"><span class="fa fa-md fa-clipboard"></span> Copy Invitation</button>
+			<button type="button" class="conn-action" @click.prevent="copyInvite"><span class="fa fa-md fa-copy"></span> Copy Invitation</button>
 			<button type="button" class="conn-action cancel" @click.prevent="showDetail(recvd_invite_id)">Done</button>
 		</div>
 	</div>
@@ -161,7 +161,7 @@
 							<span class="fa fa-lg fa-comment"></span> {{ row.meta.content }}
 						</div>
 						<div class="message-copy" v-if="row.meta.copy_invite">
-							<button type="button" class="conn-action copy-message" @click.prevent="copyMessage(conn_detail.connection_id, row)" v-if="! row.meta.copied"><span class="fa fa-md fa-clipboard"></span> Copy Invitation</button>
+							<button type="button" class="conn-action copy-message" @click.prevent="copyMessage(conn_detail.connection_id, row)" v-if="! row.meta.copied"><span class="fa fa-md fa-copy"></span> Copy Invitation</button>
 							<span class="message-copied" v-else>Invitation copied.</span>
 						</div>
 					</div>
