@@ -1,6 +1,6 @@
 body {
 	background: #EBF5F7;
-	color: #334;
+	color: #345;
 	font-family: Montserrat;
 	margin: 0;
 	padding-bottom: 40px;
@@ -13,7 +13,7 @@ body {
 }
 .app-header {
 	background: #f0f0f0;
-	background: linear-gradient(to left, #dbf3e3, #e0eff3);
+	background: linear-gradient(160deg, #e0eff3, #dbf3e3);
 	border-bottom: 2px solid #A8D1B5;
 	margin-bottom: 30px;
 	padding: 20px 15px 15px;
