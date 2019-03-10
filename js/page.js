@@ -214,6 +214,8 @@ var app = new Vue({
 				this.app_endpoint = msg.context.endpoint;
 				this.help_link = msg.context.help_link;
 				this.no_receive = !! msg.context.no_receive_invites;
+				if(this.app_label)
+					document.title = this.app_label;
 			}
 		},
 		fetchConnections () {
