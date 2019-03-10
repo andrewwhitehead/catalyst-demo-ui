@@ -3,7 +3,7 @@ body {
 	color: #345;
 	font-family: Montserrat;
 	margin: 0;
-	padding-bottom: 40px;
+	padding-bottom: 50px;
 }
 .title {
 	border-bottom: 2px solid rgba(20, 70, 150, 0.25);
@@ -13,8 +13,9 @@ body {
 }
 .app-header {
 	background: #f0f0f0;
-	background: linear-gradient(160deg, #e0eff3, #dbf3e3);
-	border-bottom: 2px solid #A8D1B5;
+	background: linear-gradient(160deg, #00AE94 30%, #8BE6A3);
+	color: #dfefff;
+	border-bottom: 2px solid #00AE94;
 	margin-bottom: 30px;
 	padding: 20px 15px 15px;
 }
@@ -29,6 +30,7 @@ body {
 	width: 60px;
 }
 .app-header .app-info {
+	text-shadow: 0 1px 1px rgba(0, 134, 108, 0.8);
 	word-break: break-word;
 }
 .app-header .left, .app-header .right {
@@ -92,7 +94,7 @@ body {
 	margin: 0 15px;
 }
 .conn-list {
-	background: #fff;
+	background: #f3f6ff;
 	border: 1px solid #bcd;
 	margin: 0 15px;
 }
@@ -130,7 +132,7 @@ body {
 	padding: 2px 2px;
 }
 .conn-alert {
-	background: #fff;
+	background: #f3f6ff;
 	border-radius: 6px;
 	border: 1.5px solid #999;
 	margin: 15px;
@@ -143,7 +145,7 @@ body {
 }
 .conn-head {
 	display: flex;
-	margin: 10px;
+	margin: 10px 15px;
 }
 .conn-info {
 	flex: 1 1 30%;
@@ -151,16 +153,17 @@ body {
 	word-break: break-word;
 }
 .conn-label {
-	text-shadow: 0 1px 1px rgba(0, 0, 50, 0.15);
+	text-shadow: 0 1px 1px rgba(0, 40, 50, 0.15);
 	margin: 10px 0 8px;
 }
 .conn-detail .conn-label {
 	margin-top: 0;
 }
 .conn-detail .conn-head {
-	background: #fff;
+	background: #f3f6ff;
 	border: 1px solid #bcd;
 	padding: 10px;
+	margin-top: 0;
 	margin-bottom: 20px;
 }
 .conn-did {
@@ -203,7 +206,7 @@ body {
 	background: lightblue;
 	border-radius: 10px;
 	color: #222;
-	padding: 5px 10px;
+	padding: 8px 10px;
 }
 .message-wrap {
 	word-wrap: break-word;
@@ -212,7 +215,7 @@ body {
 	padding-top: 8px;
 }
 .message-copied {
-	background: #fff;
+	background: #f3f6ff;
 	border-radius: 4px;
 	font-size: 80%;
 	font-weight: bold;
@@ -230,7 +233,7 @@ body {
 	text-align: right;
 }
 .conn-action {
-	background: #fff;
+	background: #f3f6ff;
 	border-radius: 5px;
 	border: 2px solid #48e;
 	color: #48e;
@@ -258,27 +261,27 @@ body {
 	color: #25c;
 }
 .conn-action.accept {
-	border-color: #398;
-	color: #398;
+	border-color: #009E84;
+	color: #009E84;
 }
 .conn-action.accept:not(:disabled):not(:hover):not(:focus) .fa {
-	color: #4a9;
+	color: #008E74;
 }
 .conn-action.cancel {
-	border-color: #666;
-	color: #666;
+	border-color: #678;
+	color: #678;
 }
 .conn-action.cancel:not(:disabled):not(:hover):not(:focus) .fa {
-	color: #777;
+	color: #789;
 }
 .conn-action.cancel:not(:disabled):hover, .conn-action.cancel:not(:disabled):focus {
-	border-color: #444;
-	color: #444;
+	border-color: #456;
+	color: #456;
 }
 .conn-action:disabled {
-	background: #f6f6f6;
-	border-color: #aaa;
-	color: #aaa;
+	background: #f0f3f6;
+	border-color: #89a;
+	color: #89a;
 	cursor: default;
 }
 .invitation-qr {
