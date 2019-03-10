@@ -87,7 +87,7 @@
 				</div>
 			</div>
 			<button type="button" class="conn-action" @click.prevent="copyInvite"><span class="fa fa-md fa-copy"></span> Copy Invitation</button>
-			<button type="button" class="conn-action cancel" @click.prevent="showDetail(recvd_invite_id)">Done</button>
+			<button type="button" class="conn-action cancel" @click.prevent="showDetail(recvd_invite_id)"><span class="fa fa-md fa-folder-open"></span> Go to Connection</button>
 		</div>
 	</div>
 	<div v-if="mode !== 'settings' && conn_error" class="conn-alert error">
