@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Indy Catalyst Administrator</title>
+	<meta charset="utf-8">
+	<meta name="description" content="Demo interface for displaying Indy Catalyst connection information">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+	<link rel="icon" href="../img/favicon.png">
+
+	<link rel="stylesheet" href="../css/page.css?2">
+
+	<!-- development version, includes helpful console warnings -->
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<!-- production version, optimized for size and speed -->
+	<!-- script src="https://cdn.jsdelivr.net/npm/vue"></script -->
+</head>
+<body>
+
+<div id="app-outer" class="app-outer" style="display: none" v-show="true">
+	<div class="app-header">
+		<div class="left">
+			<div class="app-icon">
+				<img src="../img/secret-agent-light.svg" alt="Agent">
+			</div>
+			<div class="app-info">
+				<template v-if="conn_status">
+					<h3>{{ app_label }}</h3>
+					<p>{{ app_endpoint }}</p>
+				</template>
+			</div>
+		</div>
+		<div class="right">
+			<div class="system">
+				<a :href="help_link" class="conn-action" target="_blank" rel="external" v-if="help_link"><span class="fa fa-md fa-question-circle"></span></a>
+			</div>
+		</div>
+	</div>
+	<div class="form-outer" v-if="mode === 'index' && conn_active">
+		<div class="index-outer">
+			<button class="conn-action" @click.prevent="showGenerate"><span class="fa fa-md fa-envelope"></span> Connect to {{ app_label }}</button>
+		</div>
+		<div class="index-outer">
+			<button class="conn-action" @click.prevent="showPartner"><span class="fa fa-md fa-handshake"></span> Find a Partner</button>
+		</div>
+	</div>
+	<div class="form-outer" v-if="mode === 'generate_invite'">
+		<h2 class="title">{{ conn_label }} Generated Invitation</h2>
+		<div class="form-outer">
+			<div class="invitation-outer">
+				<div class="form-group invitation-url-outer">
+					<label class="form-label">Invitation URL</label>
+					<textarea id="invitation-url" class="invitation-url identifier" rows="8" readonly="true">{{ recvd_invite_url }}</textarea>
+				</div>
+				<div class="form-group invitation-qr-outer">
+					<label class="form-label">Invitation QR Code</label>
+					<canvas id="invitation-qr" class="invitation-qr"></canvas>
+				</div>
+			</div>
+			<button type="button" class="conn-action" @click.prevent="copyInvite"><span class="fa fa-md fa-copy"></span> Copy Invitation</button>
+			<button type="button" class="conn-action cancel" @click.prevent="showIndex"><span class="fa fa-md fa-check"></span> Done</button>
+			<div class="row-copied" v-if="invite_copied">
+				<span class="message-copied">Invitation copied.</span>
+			</div>
+		</div>
+	</div>
+	<div class="form-outer" v-if="mode === 'partner_invite'">
+		<h2 class="title">Partner Invitation</h2>
+		<div class="form-outer" v-if="invite_error">
+			<div class="conn-alert error" v-if="invite_error">
+				{{ invite_error }}
+			</div>
+			<button type="button" class="conn-action cancel" @click.prevent="showIndex"><span class="fa fa-md fa-check"></span> Done</button>
+		</div>
+		<div class="conn-detail" v-if="! invite_error">
+			<div class="conn-head" v-if="invite_detail">
+				<div class="avatar-outer">
+					<img :src="invite_detail.image" class="avatar">
+				</div>
+				<div class="conn-info">
+					<h2 class="conn-label" :style="{ color: invite_detail.color }" v-if="invite_detail.their_label">{{ invite_detail.their_label }}</h2>
+					<h2 class="conn-label" :style="{ color: invite_detail.color }" v-else>Connection</h2>
+					<p class="conn-did" v-if="invite_detail.created_at"><span class="label">Joined:</span> {{ invite_detail.created_at | formatDate }}</p>
+				</div>
+			</div>
+			<div class="form-outer">
+				<div class="invitation-outer">
+					<div class="form-group invitation-url-outer">
+						<label class="form-label">Invitation URL</label>
+						<textarea id="invitation-url" class="invitation-url identifier" rows="8" readonly="true" v-if="invite_detail">{{ invite_detail.url }}</textarea>
+					</div>
+					<div class="form-group invitation-qr-outer">
+						<label class="form-label">Invitation QR Code</label>
+						<canvas id="invitation-qr" class="invitation-qr"></canvas>
+					</div>
+				</div>
+				<button type="button" class="conn-action" @click.prevent="copyInvite"><span class="fa fa-md fa-copy"></span> Copy Invitation</button>
+				<button type="button" class="conn-action cancel" @click.prevent="showIndex"><span class="fa fa-md fa-check"></span> Done</button>
+				<div class="row-copied" v-if="invite_copied">
+					<span class="message-copied">Invitation copied.</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div v-if="conn_error" class="conn-alert error">
+		{{ conn_error }}
+	</div>
+	<div v-if="conn_loading" class="conn-alert">
+		<span class="fa fa-hourglass-half"></span>&nbsp; Connecting ...
+	</div>
+</div>
+
+<script src="../js/identicon.js"></script>	
+<script src="../js/invite.js?2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.js"></script>
+</body>
+</html>

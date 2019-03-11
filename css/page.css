@@ -8,7 +8,7 @@ body {
 .title {
 	border-bottom: 2px solid rgba(20, 70, 150, 0.25);
 	color: #567;
-	padding: 4px 0;
+	padding: 4px .3em;
 	margin: 15px 15px 20px;
 }
 .app-header {
@@ -288,6 +288,21 @@ body {
 	height: auto;
 	width: 200px;
 	max-width: 100%;
+}
+
+/* invite page */
+.index-outer {
+	margin: 4em;
+	text-align: center;
+}
+.index-outer .conn-action {
+	font-size: 24px;
+}
+.index-outer .conn-action .fa {
+	font-size: 22px;
+}
+.row-copied {
+	margin-top: 0.5em;
 }
 
 @media screen and (min-width: 800px) {
