@@ -152,7 +152,7 @@ var app = new Vue({
 				}				
 			}
 			if(invites.length) {
-				var invite = invites[0];
+				var invite = invites[Math.floor(Math.random() * invites.length)];
 				var image = new Identicon(invite.connection_id, { format: 'svg', size: 84 });
 				var rgbColor = image.foreground;
 				invite.color = formatColor(rgbColor);
@@ -192,6 +192,8 @@ var app = new Vue({
 		},
 		showPartner () {
 			this.mode = "partner_invite";
+			this.invite_detail = null;
+			this.invite_error = null;
 			this.fetchConnections();
 		},
 		copyInvite () {

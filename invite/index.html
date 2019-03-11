@@ -72,6 +72,7 @@
 			<div class="conn-alert error" v-if="invite_error">
 				{{ invite_error }}
 			</div>
+			<button type="button" class="conn-action cancel" @click.prevent="showPartner"><span class="fa fa-md fa-sync-alt"></span> Retry</button>
 			<button type="button" class="conn-action cancel" @click.prevent="showIndex"><span class="fa fa-md fa-check"></span> Done</button>
 		</div>
 		<div class="conn-detail" v-if="! invite_error">
@@ -113,7 +114,7 @@
 </div>
 
 <script src="../js/identicon.js"></script>	
-<script src="../js/invite.js?2"></script>
+<script src="../js/invite.js?3"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.js"></script>
 </body>
 </html>
