@@ -97,36 +97,38 @@
 		<span class="fa fa-hourglass-half"></span>&nbsp; Connecting ...
 	</div>
 	<div v-if="mode === 'connections' && conn_status" class="conn-list-outer">
-		<h2 class="title">All Connections</h2>
-		<div class="conn-list" v-if="connections.length">
-			<div v-for="conn in connections" :key="conn.connection_id" class="conn-outer">
-				<div class="conn-head">
-					<div class="avatar-outer">
-						<img :src="conn.image" class="avatar">
-					</div>
-					<div class="conn-info">
-						<h3 class="conn-label" :style="{ color: conn.color }" v-if="conn.their_label">{{ conn.their_label }}</h3>
-						<h3 class="conn-label" :style="{ color: conn.color }" v-else-if="conn.state == 'invitation'">Pending Connection</h3>
-						<h3 class="conn-label" :style="{ color: conn.color }" v-else>Connection</h3>
-					</div>
-					<div class="conn-info">
-						<p class="conn-did identifier" v-if="conn.their_did">{{ conn.their_did }}</p>
-					</div>
-					<div class="conn-actions">
-						<span class="activity-count" v-if="conn.invite_count">
-							<span class="fa fa-envelope"></span> {{ conn.invite_count }}
-						</span>
-						<span class="activity-count" v-if="conn.activity_count">
-							<span class="fa fa-comment"></span> {{ conn.activity_count }}
-						</span>
-						<button type="button" class="conn-action accept" v-if="conn.state == 'invitation' && conn.initiator == 'external'" @click.prevent="acceptInvite(conn.connection_id)"><span class="fa fa-md fa-user-plus"></span> Accept Invitation</button>
-						<button type="button" class="conn-action accept" v-if="conn.state == 'request' && conn.initiator == 'self'" @click.prevent="acceptRequest(conn.connection_id)"><span class="fa fa-md fa-user-check"></span> Accept Request</button>
-						<button type="button" class="conn-action" @click.prevent="showDetail(conn.connection_id)"><span class="fa fa-md fa-folder-open"></span> Details</button>
+		<div v-for="group in conn_groups">
+			<h2 class="title">{{ group.label }} ({{ group.connections.length }})</h2>
+			<div class="conn-list" v-if="group.connections.length">
+				<div v-for="conn in group.connections" :key="conn.connection_id" class="conn-outer">
+					<div class="conn-head">
+						<div class="avatar-outer">
+							<img :src="conn.image" class="avatar">
+						</div>
+						<div class="conn-info">
+							<h3 class="conn-label" :style="{ color: conn.color }" v-if="conn.their_label">{{ conn.their_label }}</h3>
+							<h3 class="conn-label" :style="{ color: conn.color }" v-else-if="conn.state == 'invitation'">Pending Connection</h3>
+							<h3 class="conn-label" :style="{ color: conn.color }" v-else>Connection</h3>
+						</div>
+						<div class="conn-info">
+							<p class="conn-did identifier" v-if="conn.their_did">{{ conn.their_did }}</p>
+						</div>
+						<div class="conn-actions">
+							<span class="activity-count" v-if="conn.invite_count">
+								<span class="fa fa-envelope"></span> {{ conn.invite_count }}
+							</span>
+							<span class="activity-count" v-if="conn.activity_count">
+								<span class="fa fa-comment"></span> {{ conn.activity_count }}
+							</span>
+							<button type="button" class="conn-action accept" v-if="conn.state == 'invitation' && conn.initiator == 'external'" @click.prevent="acceptInvite(conn.connection_id)"><span class="fa fa-md fa-user-plus"></span> Accept Invitation</button>
+							<button type="button" class="conn-action accept" v-if="conn.state == 'request' && conn.initiator == 'self'" @click.prevent="acceptRequest(conn.connection_id)"><span class="fa fa-md fa-user-check"></span> Accept Request</button>
+							<button type="button" class="conn-action" @click.prevent="showDetail(conn.connection_id)"><span class="fa fa-md fa-folder-open"></span> Details</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div v-else class="conn-alert">
+		<div v-if="! conn_groups.length" class="conn-alert">
 			No connection records.
 		</div>
 	</div>

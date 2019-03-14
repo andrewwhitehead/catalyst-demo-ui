@@ -99,6 +99,44 @@ var app = new Vue({
 				if(found_idx !== null)
 					return this.connections[found_idx];
 			}
+		},
+		conn_groups() {
+			var active = [], pending = [], inactive = [], conn;
+			for(var idx = 0; idx < this.connections.length; idx ++) {
+				conn = this.connections[idx];
+				if(conn.state === "invitation") {
+					pending.push(conn);
+				}
+				else if(conn.state === "inactive") {
+					inactive.push(conn);
+				}
+				else {
+					active.push(conn);
+				}
+			}
+			var groups = [];
+			if(active.length) {
+				groups.push({
+					name: "active",
+					label: "Active Connections",
+					connections: active
+				});
+			}
+			if(inactive.length) {
+				groups.push({
+					name: "inactive",
+					label: "Inactive Connections",
+					connections: inactive
+				});
+			}
+			if(pending.length) {
+				groups.push({
+					name: "pending",
+					label: "Pending Connections",
+					connections: pending
+				});
+			}
+			return groups;
 		}
 	},
 	methods: {
