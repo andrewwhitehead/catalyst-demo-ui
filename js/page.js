@@ -5,6 +5,15 @@ function formatColor(c, a) {
 	return 'rgba(' + values.join(',') + ')';
 }
 
+function formatDate(value) {
+	if(! value) return '';
+	value = value.replace(/(\d{4}-\d{2}-\d{2}) /, "$1T");
+	var options = {
+		weekday: 'short', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric'
+	};
+	return new Date(value).toLocaleString('en-US', options);
+}
+
 var TEST_CONNECTIONS = [
 	{
 		connection_id: "6a6e6485-8d10-4507-8edb-e65939b0321e",
@@ -85,11 +94,7 @@ var app = new Vue({
 	},
 	filters: {
 		formatDate: function (value) {
-			if(! value) return '';
-			var options = {
-				weekday: 'short', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric'
-			};
-			return new Date(value).toLocaleString('en-US', options);
+			return formatDate(value);
 		}
 	},
 	computed: {
@@ -220,10 +225,8 @@ var app = new Vue({
 			}
 			this.socket.onopen = function(event) {
 				heartbeat();
-				self.fetchConnections();
 				self.conn_error = null;
-				self.conn_loading = false;
-				self.conn_status = true;
+				self.fetchConnections();
 			}
 			this.socket.onerror = function(err) {
 				self.conn_error = "Connection failed.";
@@ -273,6 +276,8 @@ var app = new Vue({
 					data.results.forEach(function(conn) {
 						self.addConnection(conn);
 					});
+					self.conn_loading = false;
+					self.conn_status = true;
 				});
 			});
 		},
