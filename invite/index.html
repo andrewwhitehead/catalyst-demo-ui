@@ -34,7 +34,7 @@
 		</div>
 		<div class="right">
 			<div class="system">
-				<a :href="help_link" class="conn-action" target="_blank" rel="external" v-if="help_link"><span class="fa fa-md fa-question-circle"></span></a>
+				<a :href="help_link" class="conn-action accept" target="_blank" rel="external" v-if="help_link"><span class="fa fa-md fa-question-circle"></span></a>
 			</div>
 		</div>
 	</div>
@@ -105,11 +105,15 @@
 			</div>
 		</div>
 	</div>
-	<div v-if="conn_error" class="conn-alert error">
-		{{ conn_error }}
+	<div v-if="conn_error" class="form-outer">
+		<div class="conn-alert error">
+			{{ conn_error }}
+		</div>
 	</div>
-	<div v-if="conn_loading" class="conn-alert">
-		<span class="fa fa-hourglass-half"></span>&nbsp; Connecting ...
+	<div v-if="conn_loading" class="form-outer">
+		<div class="conn-alert">
+			<span class="fa fa-hourglass-half"></span>&nbsp; Connecting ...
+		</div>
 	</div>
 </div>
 

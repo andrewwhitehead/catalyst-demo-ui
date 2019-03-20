@@ -9,7 +9,7 @@ body {
 	border-bottom: 2px solid rgba(20, 70, 150, 0.25);
 	color: #567;
 	padding: 4px .3em;
-	margin: 15px 15px 20px;
+	margin: 20px 15px 20px;
 }
 .app-header {
 	background: #f0f0f0;
@@ -135,7 +135,7 @@ body {
 	background: #f3f6ff;
 	border-radius: 6px;
 	border: 1.5px solid #999;
-	margin: 15px;
+	margin: 15px 0;
 	padding: 15px;
 }
 .conn-alert.error {
@@ -266,6 +266,13 @@ body {
 }
 .conn-action.accept:not(:disabled):not(:hover):not(:focus) .fa {
 	color: #008E74;
+}
+.conn-action.header {
+	border-color: #008E74;
+	color: #008E74;
+}
+.conn-action.header:not(:disabled):not(:hover):not(:focus) .fa {
+	color: #009E84;
 }
 .conn-action.cancel {
 	border-color: #678;
