@@ -140,7 +140,7 @@ body {
 }
 .conn-alert.error {
 	border-color: #e88;
-	background: #ecc;
+	background: #f6eeee;
 	color: #533;
 }
 .conn-head {
@@ -253,7 +253,7 @@ body {
 .conn-action:not(:disabled):not(:hover):not(:focus) .fa {
 	color: #59e;
 }
-.conn-action:not(:disabled):hover {
+.conn-action:not(:disabled):focus {
 	box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
 }
 .conn-action:not(:disabled):hover, .conn-action:not(:disabled):focus {
@@ -281,10 +281,6 @@ body {
 .conn-action.cancel:not(:disabled):not(:hover):not(:focus) .fa {
 	color: #789;
 }
-.conn-action.cancel:not(:disabled):hover, .conn-action.cancel:not(:disabled):focus {
-	border-color: #456;
-	color: #456;
-}
 .conn-action:disabled {
 	background: #f0f3f6;
 	border-color: #89a;
@@ -295,6 +291,129 @@ body {
 	height: auto;
 	width: 200px;
 	max-width: 100%;
+}
+
+.menu-outer {
+	background: rgba(245, 245, 241, 0.5);
+	border: 1px solid #789;
+	border-radius: 8px;
+	box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-flow: column nowrap;
+	margin-bottom: 8px;
+	max-height: 400px;
+	max-width: 400px;
+	overflow: hidden;
+}
+.menu-header {
+	border-bottom: 1px solid #89a;
+	box-shadow: 0 2px 10px 0 inset rgba(0, 0, 0, 0.1);
+	cursor: default;
+	padding: 8px;
+}
+.menu-header .menu-title-row {
+	display: flex;
+}
+.menu-close {
+	cursor: pointer;
+	flex: none;
+	text-align: center;
+	width: 25px;
+}
+.menu-title {
+	font-size: 14pt;
+	flex: auto;
+	margin: 0;
+}
+.menu-description {
+	color: #678;
+	font-size: 10pt;
+	margin-top: 6px;
+}
+.menu-error {
+	border: 1px solid #e88;
+	border-radius: 4px;
+	background: #f6eeee;
+	color: #533;
+	font-size: 10pt;
+	margin-top: 6px;
+	padding: 4px 6px;
+}
+.menu-options {
+	background: #f6f6f3;
+	flex: auto;
+	overflow: auto;
+}
+.menu-option {
+	cursor: default;
+	display: flex;
+	padding: 8px;
+	outline: none;
+}
+.menu-option:not(.disabled) {
+	cursor: pointer;
+}
+.menu-option:focus {
+	background: #deebf4;
+}
+.menu-option:not(.disabled):not(:focus):hover {
+	background: #e6f3ff;
+}
+.menu-option + .menu-option {
+	border-top: 1px solid #89a;
+}
+.option-text {
+	flex: auto;
+}
+.option-icon {
+	flex: none;
+	text-align: center;
+	width: 25px;
+}
+.menu-option.disabled .option-icon {
+	color: #abc;
+}
+.option-title {
+	font-size: 12pt;
+}
+.menu-option.disabled .option-title {
+	color: #abc;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+.option-description {
+	color: #789;
+	font-size: 10pt;
+	margin-top: 5px;
+}
+.menu-option.disabled .option-description {
+	color: #9ab;
+}
+.menu-outer .conn-action {
+	line-height: 1;
+	margin: 0;
+}
+.menu-outer .form-params {
+	background: #f6f6f3;
+	border-bottom: 1px solid #89a;
+	overflow: auto;
+}
+.menu-form {
+	display: flex;
+	flex-flow: column nowrap;
+}
+.menu-form .form-row {
+	padding: 12px 8px;
+}
+.menu-form .form-buttons {
+	padding: 8px;
+	text-align: right;
+}
+.menu-form .form-input {
+	margin-top: 4px;
+}
+.fa.right {
+	margin-left: 4px;
+	margin-right: 0;
 }
 
 /* invite page */

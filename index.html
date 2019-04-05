@@ -162,10 +162,60 @@
 				</div>
 			</div>
 			<div class="conn-body">
+				<div class="activity-row menu" v-if="conn_menu">
+					<button type="button" class="conn-action menu-button" v-if="conn_menu_closed" @click.prevent="menuShow">Show Menu <span class="fa fa-bars right"></span></button>
+					<div class="menu-outer" v-else-if="conn_menu_form">
+						<div class="menu-header">
+							<div class="menu-title-row">
+								<h3 class="menu-title">{{conn_menu_form.title || ''}}</h3>
+								<div class="menu-close" tabindex="0" @click.prevent="menuCloseForm">
+									<span class="fa fa-times"></span>
+								</div>
+							</div>
+							<div class="menu-description" v-if="conn_menu_form.description">{{conn_menu_form.description}}</div>
+						</div>
+						<div class="menu-form">
+							<div v-if="conn_menu_form.params" class="form-params">
+								<div v-for="(param, param_idx) in conn_menu_form.params" class="form-row">
+									<label class="param-title">{{ param.title }} <span class="required" v-if="param.required">*</span></label>
+									<input class="form-input" size="30" v-model="conn_menu_form.values[param.name]" :id="(param_idx == 0 ? 'menu-first-param' : '')">
+									<div class="param-description" v-if="param.description">{{ param.description }}</div>
+								</div>
+							</div>
+							<div class="form-buttons">
+								<button type="button" class="conn-action cancel" @click.prevent="menuCloseForm">Cancel</button>
+								<button type="button" class="conn-action accept" @click.prevent="menuSubmitForm">{{ conn_menu_form['submit-label'] || 'Search' }}</button>
+							</div>
+						</div>
+					</div>
+					<div class="menu-outer" v-else>
+						<div class="menu-header">
+							<div class="menu-title-row">
+								<h3 v-if="conn_menu.title" class="menu-title">{{conn_menu.title}}</h3>
+								<div class="menu-close" tabindex="0" @click.prevent="menuClose">
+									<span class="fa fa-times"></span>
+								</div>
+							</div>
+							<div class="menu-description" v-if="conn_menu.description">{{conn_menu.description}}</div>
+							<div class="menu-error" v-if="conn_menu.errormsg">{{conn_menu.errormsg}}</div>
+						</div>
+						<div class="menu-options">
+							<div v-for="(option, option_idx) in conn_menu.options" :class="'menu-option' + (option.disabled ? ' disabled' : '')" tabindex="0" @click.prevent="menuPerform(option_idx)">
+								<div class="option-text">
+									<div class="option-title">{{option.title}}</div>
+									<div class="option-description" v-if="option.description">{{option.description}}</div>
+								</div>
+								<div class="option-icon">
+									<span class="fa fa-chevron-right"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 				<div class="activity-row reply" v-if="conn_detail.state == 'active'">
 					<input type="text" class="form-input" name="send_message" placeholder="Send message .." size="60" @keyup.enter="sendMessage(conn_detail.connection_id, $event.target)" autocomplete="off">
 				</div>
-				<div :class="'activity-row ' + row.direction" v-for="row in conn_detail.activity">
+				<div v-for="row in conn_detail.activity" :class="'activity-row ' + row.direction">
 					<div class="message" v-if="row.type == 'message'">
 						<div class="message-wrap">
 							<span class="fa fa-lg fa-comment"></span> {{ row.meta.content }}

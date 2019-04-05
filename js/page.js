@@ -63,6 +63,63 @@ var TEST_CONNECTIONS = [
 	}
 ];
 
+var TEST_MENU = {
+	"@type": "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/action-menu/1.0/menu",
+	"@id": "5678876542344",
+	"title": "Welcome to IIWBook",
+	"description": "IIWBook facilitates connections between attendees by verifying attendance and distributing connection invitations.",
+	"options": [
+		{
+		  "name": "obtain-email-cred",
+		  "title": "Obtain a verified email credential",
+		  "description": "Connect with the BC email verification service to obtain a verified email credential"
+		},
+		{
+		  "name": "verify-email-cred",
+		  "title": "Verify your participation",
+		  "description": "Present a verified email credential to identify yourself"
+		},
+		{
+		  "name": "search-introductions",
+		  "title": "Search introductions",
+		  "description": "Your email address must be verified to perform a search",
+		  "disabled": true,
+		  "form": {
+			"title": "Search introductions",
+			"description": "Enter a participant name below to perform a search.",
+			"params": [
+				{
+					"name": "query",
+					"title": "Participant name",
+					"default": "",
+					"description": "",
+					"required": true,
+					"type": "text"
+				}
+			],
+			"submit-label": "Search"
+		  }
+		}
+	]
+};
+
+var TEST_MENU_FORM = {
+	"title": "Search introductions",
+	"description": "Enter a participant name below to perform a search.",
+	"params": [
+		{
+			"name": "query",
+			"title": "Participant name",
+			"default": "",
+			"description": "",
+			"required": true,
+			"type": "text"
+		}
+	],
+	"submit-label": "Search"
+};
+
+
 var app = new Vue({
 	el: '#app-outer',
 	data: {
@@ -73,6 +130,8 @@ var app = new Vue({
 		connections: [],
 		conn_detail_id: null,
 		conn_loading: false,
+		conn_menu_closed: false,
+		conn_menu_form: null,
 		conn_status: null,
 		conn_error: '',
 		help_link: null,
@@ -104,6 +163,9 @@ var app = new Vue({
 				if(found_idx !== null)
 					return this.connections[found_idx];
 			}
+		},
+		conn_menu() {
+			return this.conn_detail && this.conn_detail.menu;
 		},
 		conn_groups() {
 			var active = [], pending = [], inactive = [], conn;
@@ -199,6 +261,7 @@ var app = new Vue({
 					}
 				}
 			}
+			// conn.menu = TEST_MENU;
 		},
 		resync () {
 			var self = this;
@@ -264,6 +327,8 @@ var app = new Vue({
 			if(this.mode == "connection_detail") {
 				this.mode = "connections";
 				this.conn_detail_id = null;
+				this.conn_menu_form = null;
+				this.conn_menu_closed = false;
 			}
 			fetch(this.app_url + "/connections", {
 				cache: "no-cache",
@@ -416,6 +481,68 @@ var app = new Vue({
 				cache: "no-cache",
 				method: "POST"
 			});
+		},
+		menuPerform (option_idx) {
+			var menu = this.conn_menu;
+			if(menu && menu.options && menu.options[option_idx]) {
+				var opt = menu.options[option_idx];
+				if(opt.form) {
+					var form = Object.assign({}, opt.form);
+					if(! form.title) form.title = opt.title;
+					form.name = opt.name;
+					form.values = {};
+					for(var idx = 0; idx < form.params.length; idx ++) {
+						if("default" in form.params[idx]) {
+							form.values[form.params[idx].name] = form.params[idx]["default"];
+						}
+					}
+					this.conn_menu_form = form;
+					this.$nextTick(function() {
+						var input = document.getElementById('menu-first-param');
+						if(input) input.select();
+					});
+				} else {
+					this.menuSubmit(opt.name);
+				}
+			}
+		},
+		menuSubmit (action_name, action_params) {
+			var args = {
+				name: action_name,
+				params: action_params || {}
+			};
+			if(this.conn_detail) {
+				var conn_id = this.conn_detail.connection_id;
+				fetch(this.app_url + "/action-menu/" + conn_id + "/perform", {
+					cache: "no-cache",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					method: "POST",
+					body: JSON.stringify(args)
+				});
+			}
+		},
+		menuSubmitForm () {
+			if(this.conn_menu_form) {
+				var params = this.conn_menu_form.values || {};
+				this.menuSubmit(this.conn_menu_form.name, params);
+			}
+		},
+		menuCloseForm () {
+			this.conn_menu_form = null;
+		},
+		menuClose () {
+			this.conn_menu_closed = true;
+			/*if(this.conn_detail_id) {
+				fetch(this.app_url + "/action-menu/" + this.conn_detail_id + "/close", {
+					cache: "no-cache",
+					method: "POST"
+				});
+			}*/
+		},
+		menuShow () {
+			this.conn_menu_closed = false;
 		}
 	}
 });
