@@ -162,7 +162,7 @@
 				</div>
 			</div>
 			<div class="conn-body">
-				<div class="activity-row menu" v-if="conn_menu">
+				<div class="activity-row menu">
 					<button type="button" class="conn-action menu-button" v-if="conn_menu_closed" @click.prevent="menuShow">Show Menu <span class="fa fa-bars right"></span></button>
 					<div class="menu-outer" v-else-if="conn_menu_form">
 						<div class="menu-header">
@@ -174,7 +174,7 @@
 							</div>
 							<div class="menu-description" v-if="conn_menu_form.description">{{conn_menu_form.description}}</div>
 						</div>
-						<div class="menu-form">
+						<form class="menu-form" autocomplete="off" @submit.prevent="menuSubmitForm">
 							<div v-if="conn_menu_form.params" class="form-params">
 								<div v-for="(param, param_idx) in conn_menu_form.params" class="form-row">
 									<label class="param-title">{{ param.title }} <span class="required" v-if="param.required">*</span></label>
@@ -184,11 +184,11 @@
 							</div>
 							<div class="form-buttons">
 								<button type="button" class="conn-action cancel" @click.prevent="menuCloseForm">Cancel</button>
-								<button type="button" class="conn-action accept" @click.prevent="menuSubmitForm">{{ conn_menu_form['submit-label'] || 'Search' }}</button>
+								<button type="submit" class="conn-action accept">{{ conn_menu_form['submit-label'] || 'Search' }}</button>
 							</div>
-						</div>
+						</form>
 					</div>
-					<div class="menu-outer" v-else>
+					<div class="menu-outer" v-else-if="conn_menu">
 						<div class="menu-header">
 							<div class="menu-title-row">
 								<h3 v-if="conn_menu.title" class="menu-title">{{conn_menu.title}}</h3>

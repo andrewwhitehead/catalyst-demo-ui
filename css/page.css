@@ -294,10 +294,17 @@ body {
 }
 
 .menu-outer {
-	background: rgba(245, 245, 241, 0.5);
+	background: rgba(240, 230, 210, 0.5);
+	background: repeating-linear-gradient(
+	  45deg,
+	  rgba(240, 230, 210, 0.5),
+	  rgba(240, 230, 210, 0.5) 10px,
+	  rgba(240, 230, 210, 0.7) 10px,
+	  rgba(240, 230, 210, 0.7) 12px
+	);
 	border: 1px solid #789;
 	border-radius: 8px;
-	box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 2px 2px rgba(50, 40, 30, 0.1);
 	display: flex;
 	flex-flow: column nowrap;
 	margin-bottom: 8px;
@@ -354,9 +361,9 @@ body {
 	cursor: pointer;
 }
 .menu-option:focus {
-	background: #deebf4;
+	box-shadow: inset 0 0 7px 0 rgba(0, 100, 200, 0.7);
 }
-.menu-option:not(.disabled):not(:focus):hover {
+.menu-option:not(.disabled):hover {
 	background: #e6f3ff;
 }
 .menu-option + .menu-option {
@@ -378,7 +385,7 @@ body {
 }
 .menu-option.disabled .option-title {
 	color: #abc;
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+	text-shadow: 0 -1px 0 rgba(0, 0, 50, 0.2);
 }
 .option-description {
 	color: #789;

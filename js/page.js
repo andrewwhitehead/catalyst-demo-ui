@@ -130,7 +130,7 @@ var app = new Vue({
 		connections: [],
 		conn_detail_id: null,
 		conn_loading: false,
-		conn_menu_closed: false,
+		conn_menu_closed: true,
 		conn_menu_form: null,
 		conn_status: null,
 		conn_error: '',
@@ -313,6 +313,18 @@ var app = new Vue({
 			else if(msg.type === "connection_update") {
 				this.mergeConnection(msg.context.connection);
 			}
+			else if(msg.type === "connection_menu") {
+				if(msg.context.connection_id == this.conn_detail_id) {
+					this.updateConnection({
+						connection_id: this.conn_detail_id,
+						menu: msg.context.menu
+					});
+					console.log(this.conn_menu);
+					console.log(this.conn_detail);
+					this.conn_menu_closed = ! this.conn_menu;
+					this.conn_menu_form = null;
+				}
+			}
 			else if(msg.type == "settings") {
 				this.app_label = msg.context.label;
 				this.app_endpoint = msg.context.endpoint;
@@ -328,7 +340,7 @@ var app = new Vue({
 				this.mode = "connections";
 				this.conn_detail_id = null;
 				this.conn_menu_form = null;
-				this.conn_menu_closed = false;
+				this.conn_menu_closed = true;
 			}
 			fetch(this.app_url + "/connections", {
 				cache: "no-cache",
@@ -529,20 +541,37 @@ var app = new Vue({
 				this.menuSubmit(this.conn_menu_form.name, params);
 			}
 		},
+		menuFetch () {
+			if(this.conn_detail_id) {
+				fetch(this.app_url + "/action-menu/" + this.conn_detail_id + "/fetch", {
+					cache: "no-cache",
+					method: "POST"
+				}).then(function(response) {
+					if(response.ok) response.json().then(function(data) {
+						console.log("received menu:", data);
+					});
+				});
+			}
+		},
 		menuCloseForm () {
 			this.conn_menu_form = null;
 		},
 		menuClose () {
 			this.conn_menu_closed = true;
-			/*if(this.conn_detail_id) {
+			if(this.conn_detail_id) {
 				fetch(this.app_url + "/action-menu/" + this.conn_detail_id + "/close", {
 					cache: "no-cache",
 					method: "POST"
 				});
-			}*/
+			}
 		},
 		menuShow () {
-			this.conn_menu_closed = false;
+			if(this.conn_detail_id) {
+				fetch(this.app_url + "/action-menu/" + this.conn_detail_id + "/request", {
+					cache: "no-cache",
+					method: "POST"
+				});
+			}
 		}
 	}
 });
