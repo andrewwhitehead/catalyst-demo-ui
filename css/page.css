@@ -112,7 +112,7 @@ body {
 	border: 1px solid #bcd;
 	margin: 0 15px;
 }
-.conn-list .avatar {
+.conn-list .avatar, .avatar.small {
 	width: 40px;
 }
 .conn-list .conn-did {
@@ -170,7 +170,7 @@ body {
 	text-shadow: 0 1px 1px rgba(0, 40, 50, 0.15);
 	margin: 10px 0 8px;
 }
-.conn-detail .conn-label {
+.conn-detail .conn-label, cred-detail-outer .conn-label, .pres-detail-outer .conn-label {
 	margin-top: 0;
 }
 .conn-detail .conn-head {

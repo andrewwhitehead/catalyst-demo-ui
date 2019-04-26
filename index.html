@@ -158,6 +158,7 @@
 					<p class="conn-did identifier" v-if="conn_detail.their_did"><span class="label">Their DID:</span> {{ conn_detail.their_did }}</p>
 					<p class="conn-did identifier" v-if="conn_detail.my_did"><span class="label">My DID:</span> {{ conn_detail.my_did }}</p>
 					<p class="conn-did" v-if="conn_detail.created_at"><span class="label">Created:</span> {{ conn_detail.created_at | formatDate }}</p>
+					<p class="conn-did" v-if="conn_detail.connection_id"><span class="label">ID:</span> {{ conn_detail.connection_id }}</p>
 				</div>
 				<div class="conn-actions">
 					<button type="button" class="conn-action accept" v-if="conn_detail.state == 'invitation' && conn_detail.initiator == 'external'" @click.prevent="acceptInvite(conn_detail.connection_id)"><span class="fa fa-md fa-check"></span> Accept Invitation</button>
@@ -276,6 +277,7 @@
 							</div>
 							<div class="conn-actions">
 								<button type="button" class="conn-action accept" v-if="cred.state == 'offer_received' && cred.initiator == 'external'" @click.prevent="acceptCredentialOffer(cred.credential_exchange_id)"><span class="fa fa-md fa-check"></span> Accept Credential Offer</button>
+								<button type="button" class="conn-action" @click.prevent="showCredentialDetail(cred.credential_exchange_id)"><span class="fa fa-md fa-folder-open"></span> Details</button>
 							</div>
 						</div>
 					</div>
@@ -285,6 +287,41 @@
 		<div v-if="! cred_groups.length" class="form-outer">
 			<div class="conn-alert">
 				No credential exchange records.
+			</div>
+		</div>
+	</div>
+	<div class="conn-detail-outer cred-detail-outer" v-if="mode === 'credential_detail'">
+		<h2 class="title">Credential Details</h2>
+		<div class="conn-detail">
+			<div class="conn-head">
+				<div class="conn-info">
+					<h3 class="conn-label" v-if="cred_detail.schema_name">{{ cred_detail.schema_name }} {{ cred_detail.schema_version }}</h3>
+					<h3 class="conn-label" v-else>Credential</h3>
+					<p class="conn-did identifier" v-if="cred_detail.credential_exchange_id">ID: {{ cred_detail.credential_exchange_id }}</p>
+				</div>
+				<div class="avatar-outer">
+					<img :src="cred_detail.image" class="avatar small">
+				</div>
+				<div class="conn-info">
+					<h4 class="conn-label" :style="{ color: cred_detail.color }" v-if="cred_detail.connection_label">{{ cred_detail.connection_label }}</h4>
+					<p class="conn-did identifier" v-if="cred_detail.issuer_did">{{ cred_detail.issuer_did }}</p>
+				</div>
+				<div class="conn-actions">
+					<button type="button" class="conn-action cancel" @click.prevent="removeCredential(cred_detail.credential_exchange_id)"><span class="fa fa-md fa-trash"></span> Remove</button>
+					<button type="button" class="conn-action accept" @click.prevent="showCredentials()"><span class="fa fa-md fa-arrow-left"></span> Go Back</button>
+				</div>
+			</div>
+		</div>
+		<div class="conn-list" v-if="cred_detail.cred_attrs">
+			<div v-for="attr in cred_detail.cred_attrs" :key="attr.name" class="conn-outer">
+				<div class="conn-head">
+					<div class="conn-info">
+						<h4 class="conn-label">{{ attr.name }}</h4>
+					</div>
+					<div class="conn-info">
+						<h4 class="conn-label">{{ attr.value }}</h4>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -316,11 +353,46 @@
 		</div>
 		<div v-if="! pres_groups.length" class="form-outer">
 			<div class="conn-alert">
-				No credential exchange records.
+				No presentation exchange records.
 			</div>
 		</div>
 	</div>
-
+	<div class="conn-detail-outer pres-detail-outer" v-if="mode === 'presentation_prepare'">
+		<h2 class="title">Prepare Presentation</h2>
+		<div class="conn-detail">
+			<div class="conn-head">
+				<div class="conn-info">
+					<h3 class="conn-label" v-if="pres_detail.presentation_request && pres_detail.presentation_request.name">{{ pres_detail.presentation_request.name }}</h3>
+					<h3 class="conn-label" v-else>Presentation Request</h3>
+				</div>
+				<div class="avatar-outer">
+					<img :src="pres_detail.image" class="avatar small">
+				</div>
+				<div class="conn-info">
+					<h4 class="conn-label" :style="{ color: pres_detail.color }" v-if="pres_detail.connection_label">{{ pres_detail.connection_label }}</h4>
+					<p class="conn-did identifier" v-if="pres_detail.connection_did">{{ pres_detail.connection_did }}</p>
+				</div>
+				<div class="conn-actions">
+					<button type="button" class="conn-action accept" @click.prevent="submitPresentation()"><span class="fa fa-md fa-check"></span> Submit Presentation</button>
+					<button type="button" class="conn-action cancel" @click.prevent="showPresentations()"><span class="fa fa-md fa-times"></span> Cancel</button>
+				</div>
+			</div>
+		</div>
+		<div class="conn-list" v-if="pres_detail.cred_opts">
+			<div v-for="attr in pres_detail.cred_opts" :key="attr.name" class="conn-outer">
+				<div class="conn-head">
+					<div class="conn-info">
+						<h4 class="conn-label">{{ attr.name }}</h4>
+					</div>
+					<div class="conn-info">
+						<select class="form-input" v-model="attr.selected">
+							<option v-for="opt in attr.options" :value="opt.id">{{ opt.value }} ({{ opt.schema_name }} {{ opt.schema_version }})</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script src="js/identicon.js"></script>	

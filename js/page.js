@@ -135,7 +135,11 @@ var app = new Vue({
 		conn_status: null,
 		conn_error: '',
 		credentials: [],
+		cred_detail_id: null,
+		cred_loading: false,
 		presentations: [],
+		pres_detail_id: null,
+		pres_loading: false,
 		help_link: null,
 		input_invite_url: '',
 		mode: "settings",
@@ -208,34 +212,17 @@ var app = new Vue({
 			return groups;
 		},
 		cred_groups() {
-			var active = [], pending = [], inactive = [], cred;
+			var active = [], pending = [], cred;
 			for(var idx = 0; idx < this.credentials.length; idx ++) {
 				cred = this.credentials[idx];
 				if(cred.state === "offer_received") {
 					pending.push(cred);
-				}
-				else if(cred.state === "inactive") {
-					inactive.push(cred);
 				}
 				else {
 					active.push(cred);
 				}
 			}
 			var groups = [];
-			if(active.length) {
-				groups.push({
-					name: "active",
-					label: "Received Credentials",
-					credentials: active
-				});
-			}
-			if(inactive.length) {
-				groups.push({
-					name: "inactive",
-					label: "Inactive Credentials",
-					credentials: inactive
-				});
-			}
 			if(pending.length) {
 				groups.push({
 					name: "pending",
@@ -243,37 +230,34 @@ var app = new Vue({
 					credentials: pending
 				});
 			}
+			if(active.length) {
+				groups.push({
+					name: "active",
+					label: "Received Credentials",
+					credentials: active
+				});
+			}
 			return groups;
 		},
+		cred_detail() {
+			if(this.cred_detail_id) {
+				var found_idx = this.findCredential(this.cred_detail_id);
+				if(found_idx !== null)
+					return this.credentials[found_idx];
+			}
+		},
 		pres_groups() {
-			var active = [], pending = [], inactive = [], pres;
+			var active = [], pending = [], pres;
 			for(var idx = 0; idx < this.presentations.length; idx ++) {
 				pres = this.presentations[idx];
 				if(pres.state === "request_received") {
 					pending.push(pres);
-				}
-				else if(pres.state === "inactive") {
-					inactive.push(pres);
 				}
 				else {
 					active.push(pres);
 				}
 			}
 			var groups = [];
-			if(active.length) {
-				groups.push({
-					name: "active",
-					label: "Complete Presentation Requests",
-					presentations: active
-				});
-			}
-			if(inactive.length) {
-				groups.push({
-					name: "inactive",
-					label: "Inactive Presentation Requests",
-					presentations: inactive
-				});
-			}
 			if(pending.length) {
 				groups.push({
 					name: "pending",
@@ -281,7 +265,21 @@ var app = new Vue({
 					presentations: pending
 				});
 			}
+			if(active.length) {
+				groups.push({
+					name: "active",
+					label: "Completed Presentation Requests",
+					presentations: active
+				});
+			}
 			return groups;
+		},
+		pres_detail() {
+			if(this.pres_detail_id) {
+				var found_idx = this.findPresentation(this.pres_detail_id);
+				if(found_idx !== null)
+					return this.presentations[found_idx];
+			}
 		}
 	},
 	methods: {
@@ -641,6 +639,60 @@ var app = new Vue({
 				});
 			});
 		},
+		findCredential (cred_id) {
+			for(var idx = 0; idx < this.credentials.length; idx ++) {
+				if(this.credentials[idx].credential_exchange_id === cred_id)
+					return idx;
+			}
+			return null;
+		},
+		showCredentialDetail (cred_id) {
+			var found_idx = this.findCredential(cred_id);
+			if(found_idx !== null) {
+				this.cred_detail_id = cred_id;
+				this.mode = "credential_detail";
+				this.fetchCredentialDetail();
+			}
+		},
+		fetchCredentialDetail () {
+			var record = this.cred_detail;
+			var self = this;
+			if(record && record.credential_id) {
+				this.cred_loading = true;
+				fetch(this.app_url + "/credential/" + record.credential_id, {
+					cache: "no-cache",
+				}).then(function(response) {
+					self.cred_loading = false;
+					if(response.ok) response.json().then(function(data) {
+						console.log("received credential:", data);
+						var found_idx = self.findCredential(record.credential_exchange_id);
+						var attrs = [];
+						if(data.attrs) {
+							for(var k in data.attrs) {
+								attrs.push({name: k, value: data.attrs[k]});
+							}
+						}
+						attrs.sort(function(a, b) { return a.name.localeCompare(b.name); });
+						record.cred_attrs = attrs;
+						if(found_idx !== null) {
+							self.$set(self.credentials, found_idx, record);
+						}
+					});
+				});
+			}
+		},
+		removeCredential (cred_id) {
+			var self = this;
+			fetch(this.app_url + "/credential_exchange/" + cred_id + "/remove", {
+				cache: "no-cache",
+				method: "POST"
+			}).then(function(response) {
+				if(response.ok) {
+					self.showCredentials();
+					self.fetchCredentials();
+				}
+			});
+		},
 		showPresentations (resync) {
 			this.mode = "presentations";
 			if(! this.conn_status || resync === true) {
@@ -680,13 +732,123 @@ var app = new Vue({
 				}
 			}
 		},
-		preparePresentation () {
-			
+		findPresentation (pres_id) {
+			for(var idx = 0; idx < this.presentations.length; idx ++) {
+				if(this.presentations[idx].presentation_exchange_id === pres_id)
+					return idx;
+			}
+			return null;
+		},
+		preparePresentation (pres_id) {
+			var found_idx = this.findPresentation(pres_id);
+			if(found_idx !== null) {
+				this.pres_detail_id = pres_id;
+				this.mode = "presentation_prepare";
+				this.fetchPresentationCreds();
+			}
+		},
+		showPresentationDetail (pres_id) {
+			var found_idx = this.findPresentation(pres_id);
+			if(found_idx !== null) {
+				this.pres_detail_id = pres_id;
+				this.mode = "presentation_detail";
+			}
+		},
+		fetchPresentationCreds () {
+			var record = this.pres_detail;
+			var self = this;
+			if(record) {
+				this.pres_loading = true;
+				fetch(this.app_url + "/presentation_exchange/" + record.presentation_exchange_id + "/credentials", {
+					cache: "no-cache",
+				}).then(function(response) {
+					self.pres_loading = false;
+					if(response.ok) response.json().then(function(data) {
+						console.log("received credentials:", data);
+						var found_idx = self.findPresentation(record.presentation_exchange_id);
+						record.cred_opts = self.expandPresentationOptions(record, data);
+						if(found_idx !== null) {
+							self.$set(self.presentations, found_idx, record);
+						}
+					});
+				});
+			}
+		},
+		expandPresentationOptions (record, creds) {
+			var cred_opts = [];
+			var attr_names = {};
+			if(record.presentation_request) {
+				var req_attrs = record.presentation_request.requested_attributes;
+				for(var attr_id in req_attrs) {
+					attr_names[attr_id] = req_attrs[attr_id].name;
+				}
+			}
+			if(creds.attrs) {
+				for(var attr_id in creds.attrs) {
+					var attr_creds = creds.attrs[attr_id];
+					if(attr_id in attr_names) {
+						var attr_name = attr_names[attr_id];
+						var opt = {
+							id: attr_id,
+							name: attr_name,
+							options: [],
+							selected: null,
+						};
+						for(var idx = 0; idx < attr_creds.length; idx++) {
+							var attr_cred = attr_creds[idx].cred_info;
+							var schema_id = attr_cred.schema_id.split(':');
+							opt.options.push({
+								id: attr_cred.referent,
+								value: attr_cred.attrs[attr_name],
+								schema_name: schema_id[2],
+								schema_version: schema_id[3],
+							});
+							if(! opt.selected) opt.selected = attr_cred.referent;
+						}
+						cred_opts.push(opt);
+					}
+				}
+			}
+			return cred_opts;
+		},
+		submitPresentation () {
+			var record = this.pres_detail;
+			var self = this;
+			if(record && record.cred_opts) {
+				var attrs = {};
+				for(var idx = 0; idx < record.cred_opts.length; idx++) {
+					var opt = record.cred_opts[idx];
+					attrs[opt.id] = {cred_id: opt.selected, revealed: true};
+				}
+				var request = {
+					self_attested_attributes: {},
+					requested_attributes: attrs,
+					requested_predicates: {},
+				};
+				fetch(this.app_url + "/presentation_exchange/" + record.presentation_exchange_id + "/send_presentation", {
+					cache: "no-cache",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					method: "POST",
+					body: JSON.stringify(request)
+				}).then(function(response) {
+					if(response.ok) response.json().then(function(data) {
+						console.log("sent presentation:", data);
+						self.showPresentations();
+						var found_idx = self.findPresentation(record.presentation_exchange_id);
+						if(found_idx !== null) {
+							self.$set(self.presentations, found_idx, data);
+						}
+					});
+				});
+			}
 		},
 		menuPerform (option_idx) {
 			var menu = this.conn_menu;
 			if(menu && menu.options && menu.options[option_idx]) {
 				var opt = menu.options[option_idx];
+				console.log("menu perform:", opt.name);
 				if(opt.form) {
 					var form = Object.assign({}, opt.form);
 					if(! form.title) form.title = opt.title;
