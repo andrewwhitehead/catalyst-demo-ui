@@ -17,7 +17,7 @@ body {
 	color: #dfefff;
 	border-bottom: 2px solid #00AE94;
 	margin-bottom: 30px;
-	padding: 20px 15px 15px;
+	padding: 20px 30px 15px;
 }
 .app-header div {
 	flex: auto;
@@ -61,6 +61,20 @@ body {
 }
 .app-header p {
 	margin: 0 0 5px 0;
+}
+.nav-menu {
+	/* background: #fff;
+	background: linear-gradient(to bottom, #f0f0f0 30%, #fff 100%);
+	border: 2px solid #abc;
+	border-radius: 4px;
+	padding: 5px 5px 1px;*/
+	margin: 0 30px;
+}
+.nav-menu div {
+	flex: auto;
+}
+.nav-menu .right {
+	flex: 0 1 auto;
 }
 .form-outer {
 	margin: 5px 15px 15px;
@@ -260,6 +274,14 @@ body {
 	border-color: #25c;
 	color: #25c;
 }
+.conn-action.active:not(:hover) {
+	background: linear-gradient(to bottom, #48e 0%, #59f 100%);
+	border-color: #25c;
+	color: #fff;
+}
+.conn-action.active:not(:disabled):not(:hover):not(:focus) .fa {
+	color: #fff;
+}
 .conn-action.accept {
 	border-color: #009E84;
 	color: #009E84;
@@ -450,6 +472,9 @@ body {
 		padding-right: 2em;
 	}
 	.app-header {
+		display: flex;
+	}
+	.nav-menu {
 		display: flex;
 	}
 }

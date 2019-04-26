@@ -124,7 +124,7 @@ var app = new Vue({
 	el: '#app-outer',
 	data: {
 		autoconnect: true,
-		app_url: "http://agentbook.vonx.io:5000",
+		app_url: "http://anywhy.ca:5000",
 		app_label: '',
 		app_endpoint: '',
 		connections: [],
@@ -134,6 +134,8 @@ var app = new Vue({
 		conn_menu_form: null,
 		conn_status: null,
 		conn_error: '',
+		credentials: [],
+		presentations: [],
 		help_link: null,
 		input_invite_url: '',
 		mode: "settings",
@@ -171,14 +173,14 @@ var app = new Vue({
 			var active = [], pending = [], inactive = [], conn;
 			for(var idx = 0; idx < this.connections.length; idx ++) {
 				conn = this.connections[idx];
-				if(conn.state === "invitation") {
-					pending.push(conn);
+				if(conn.state === "active") {
+					active.push(conn);
 				}
 				else if(conn.state === "inactive") {
 					inactive.push(conn);
 				}
 				else {
-					active.push(conn);
+					pending.push(conn);
 				}
 			}
 			var groups = [];
@@ -204,13 +206,89 @@ var app = new Vue({
 				});
 			}
 			return groups;
+		},
+		cred_groups() {
+			var active = [], pending = [], inactive = [], cred;
+			for(var idx = 0; idx < this.credentials.length; idx ++) {
+				cred = this.credentials[idx];
+				if(cred.state === "offer_received") {
+					pending.push(cred);
+				}
+				else if(cred.state === "inactive") {
+					inactive.push(cred);
+				}
+				else {
+					active.push(cred);
+				}
+			}
+			var groups = [];
+			if(active.length) {
+				groups.push({
+					name: "active",
+					label: "Received Credentials",
+					credentials: active
+				});
+			}
+			if(inactive.length) {
+				groups.push({
+					name: "inactive",
+					label: "Inactive Credentials",
+					credentials: inactive
+				});
+			}
+			if(pending.length) {
+				groups.push({
+					name: "pending",
+					label: "Pending Credential Offers",
+					credentials: pending
+				});
+			}
+			return groups;
+		},
+		pres_groups() {
+			var active = [], pending = [], inactive = [], pres;
+			for(var idx = 0; idx < this.presentations.length; idx ++) {
+				pres = this.presentations[idx];
+				if(pres.state === "request_received") {
+					pending.push(pres);
+				}
+				else if(pres.state === "inactive") {
+					inactive.push(pres);
+				}
+				else {
+					active.push(pres);
+				}
+			}
+			var groups = [];
+			if(active.length) {
+				groups.push({
+					name: "active",
+					label: "Complete Presentation Requests",
+					presentations: active
+				});
+			}
+			if(inactive.length) {
+				groups.push({
+					name: "inactive",
+					label: "Inactive Presentation Requests",
+					presentations: inactive
+				});
+			}
+			if(pending.length) {
+				groups.push({
+					name: "pending",
+					label: "Pending Presentation Requests",
+					presentations: pending
+				});
+			}
+			return groups;
 		}
 	},
 	methods: {
 		showSettings() {
 			this.mode = "settings";
 		},
-		showConnections(resync) {
+		showConnections (resync) {
 			this.mode = "connections";
 			if(! this.conn_status || resync === true)
 				this.resync();
@@ -263,7 +341,19 @@ var app = new Vue({
 			}
 			// conn.menu = TEST_MENU;
 		},
-		resync () {
+		removeConnection (conn_id) {
+			var self = this;
+			fetch(this.app_url + "/connections/" + conn_id + "/remove", {
+				cache: "no-cache",
+				method: "POST"
+			}).then(function(response) {
+				if(response.ok) {
+					self.showConnections();
+					self.fetchConnections();
+				}
+			});
+		},
+		resync (callback) {
 			var self = this;
 			clearTimeout(this.ping_timeout);
 			var heartbeat = function() {
@@ -289,7 +379,7 @@ var app = new Vue({
 			this.socket.onopen = function(event) {
 				heartbeat();
 				self.conn_error = null;
-				self.fetchConnections();
+				self.fetchConnections(callback);
 			}
 			this.socket.onerror = function(err) {
 				self.conn_error = "Connection failed.";
@@ -334,7 +424,7 @@ var app = new Vue({
 					document.title = this.app_label;
 			}
 		},
-		fetchConnections () {
+		fetchConnections (callback) {
 			var self = this;
 			if(this.mode == "connection_detail") {
 				this.mode = "connections";
@@ -355,6 +445,7 @@ var app = new Vue({
 					});
 					self.conn_loading = false;
 					self.conn_status = true;
+					if(callback) callback();
 				});
 			});
 		},
@@ -493,6 +584,104 @@ var app = new Vue({
 				cache: "no-cache",
 				method: "POST"
 			});
+		},
+		showCredentials (resync) {
+			this.mode = "credentials";
+			if(! this.conn_status || resync === true) {
+				this.resync(this.fetchCredentials.bind(this));
+			} else {
+				this.fetchCredentials();
+			}
+		},
+		fetchCredentials () {
+			var self = this;
+			fetch(this.app_url + "/credential_exchange", {
+				cache: "no-cache",
+				headers: {
+					"Content-Type": "application/json",
+				}
+			}).then(function(response) {
+				if(response.ok) response.json().then(function(data) {
+					self.credentials = [];
+					data.results.forEach(function(cred) {
+						self.expandCredential(cred);
+						self.credentials.push(cred);
+					});
+					console.log("credentials", data);
+				});
+			});
+		},
+		expandCredential (cred) {
+			if(cred.connection_id && ! cred.image) {
+				var image = new Identicon(cred.connection_id, { format: 'svg', size: 84 });
+				var rgbColor = image.foreground;
+				cred.color = formatColor(rgbColor);
+				cred.image = 'data:image/svg+xml;base64,' + image.toString();
+				if(cred.schema_id) {
+					var parts = cred.schema_id.split(':');
+					cred.issuer_did = parts[0];
+					cred.schema_name = parts[2];
+					cred.schema_version = parts[3];
+				}
+				var conn_idx = this.findConnection(cred.connection_id);
+				if(conn_idx !== null) {
+					cred.connection_label = this.connections[conn_idx].their_label;
+				}
+			}
+		},
+		acceptCredentialOffer (cred_id) {
+			var self;
+			fetch(this.app_url + "/credential_exchange/" + cred_id + "/send-request", {
+				cache: "no-cache",
+				method: "POST"
+			}).then(function(response) {
+				if(response.ok) response.json().then(function(data) {
+					console.log("accepted credential offer:", data);
+					self.fetchCredentials();
+				});
+			});
+		},
+		showPresentations (resync) {
+			this.mode = "presentations";
+			if(! this.conn_status || resync === true) {
+				this.resync(this.fetchPresentations.bind(this));
+			} else {
+				this.fetchPresentations();
+			}
+		},
+		fetchPresentations () {
+			var self = this;
+			fetch(this.app_url + "/presentation_exchange", {
+				cache: "no-cache",
+				headers: {
+					"Content-Type": "application/json",
+				}
+			}).then(function(response) {
+				if(response.ok) response.json().then(function(data) {
+					self.presentations = [];
+					data.results.forEach(function(cred) {
+						self.expandPresentation(cred);
+						self.presentations.push(cred);
+					});
+					console.log("presentations", data);
+				});
+			});
+		},
+		expandPresentation (pres) {
+			if(pres.connection_id && ! pres.image) {
+				var image = new Identicon(pres.connection_id, { format: 'svg', size: 84 });
+				var rgbColor = image.foreground;
+				pres.color = formatColor(rgbColor);
+				pres.image = 'data:image/svg+xml;base64,' + image.toString();
+				var conn_idx = this.findConnection(pres.connection_id);
+				if(conn_idx !== null) {
+					pres.connection_label = this.connections[conn_idx].their_label;
+					pres.connection_did = this.connections[conn_idx].their_did;
+				}
+			}
+		},
+		preparePresentation () {
+			
 		},
 		menuPerform (option_idx) {
 			var menu = this.conn_menu;
