@@ -124,7 +124,7 @@ var app = new Vue({
 	el: '#app-outer',
 	data: {
 		autoconnect: true,
-		app_url: "http://anywhy.ca:5000",
+		app_url: "https://agentbook.vonx.io:5000",
 		app_label: '',
 		app_endpoint: '',
 		connections: [],
@@ -628,7 +628,7 @@ var app = new Vue({
 			}
 		},
 		acceptCredentialOffer (cred_id) {
-			var self;
+			var self = this;
 			fetch(this.app_url + "/credential_exchange/" + cred_id + "/send-request", {
 				cache: "no-cache",
 				method: "POST"
@@ -843,6 +843,18 @@ var app = new Vue({
 					});
 				});
 			}
+		},
+		removePresentation (pres_id) {
+			var self = this;
+			fetch(this.app_url + "/presentation_exchange/" + pres_id + "/remove", {
+				cache: "no-cache",
+				method: "POST"
+			}).then(function(response) {
+				if(response.ok) {
+					self.showPresentations();
+					self.fetchPresentations();
+				}
+			});
 		},
 		menuPerform (option_idx) {
 			var menu = this.conn_menu;

@@ -308,7 +308,7 @@
 				</div>
 				<div class="conn-actions">
 					<button type="button" class="conn-action cancel" @click.prevent="removeCredential(cred_detail.credential_exchange_id)"><span class="fa fa-md fa-trash"></span> Remove</button>
-					<button type="button" class="conn-action accept" @click.prevent="showCredentials()"><span class="fa fa-md fa-arrow-left"></span> Go Back</button>
+					<button type="button" class="conn-action" @click.prevent="showCredentials()"><span class="fa fa-md fa-arrow-left"></span> Go Back</button>
 				</div>
 			</div>
 		</div>
@@ -345,6 +345,7 @@
 							</div>
 							<div class="conn-actions">
 								<button type="button" class="conn-action accept" v-if="pres.state == 'request_received' && pres.initiator == 'external'" @click.prevent="preparePresentation(pres.presentation_exchange_id)"><span class="fa fa-md fa-chevron-right"></span> Prepare Presentation</button>
+								<button type="button" class="conn-action" v-else @click.prevent="showPresentationDetail(pres.presentation_exchange_id)"><span class="fa fa-md fa-folder-open"></span> Details</button>
 							</div>
 						</div>
 					</div>
@@ -354,6 +355,28 @@
 		<div v-if="! pres_groups.length" class="form-outer">
 			<div class="conn-alert">
 				No presentation exchange records.
+			</div>
+		</div>
+	</div>
+	<div class="conn-detail-outer pres-detail-outer" v-if="mode === 'presentation_detail'">
+		<h2 class="title">Presentation Details</h2>
+		<div class="conn-detail">
+			<div class="conn-head">
+				<div class="conn-info">
+					<h3 class="conn-label" v-if="pres_detail.presentation_request && pres_detail.presentation_request.name">{{ pres_detail.presentation_request.name }}</h3>
+					<h3 class="conn-label" v-else>Presentation Request</h3>
+				</div>
+				<div class="avatar-outer">
+					<img :src="pres_detail.image" class="avatar small">
+				</div>
+				<div class="conn-info">
+					<h4 class="conn-label" :style="{ color: pres_detail.color }" v-if="pres_detail.connection_label">{{ pres_detail.connection_label }}</h4>
+					<p class="conn-did identifier" v-if="pres_detail.connection_did">{{ pres_detail.connection_did }}</p>
+				</div>
+				<div class="conn-actions">
+					<button type="button" class="conn-action cancel" @click.prevent="removePresentation(pres.presentation_exchange_id)"><span class="fa fa-md fa-trash"></span> Remove</button>
+					<button type="button" class="conn-action" @click.prevent="showPresentations()"><span class="fa fa-md fa-arrow-left"></span> Go Back</button>
+				</div>
 			</div>
 		</div>
 	</div>
