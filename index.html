@@ -374,7 +374,7 @@
 					<p class="conn-did identifier" v-if="pres_detail.connection_did">{{ pres_detail.connection_did }}</p>
 				</div>
 				<div class="conn-actions">
-					<button type="button" class="conn-action cancel" @click.prevent="removePresentation(pres.presentation_exchange_id)"><span class="fa fa-md fa-trash"></span> Remove</button>
+					<button type="button" class="conn-action cancel" @click.prevent="removePresentation(pres_detail.presentation_exchange_id)"><span class="fa fa-md fa-trash"></span> Remove</button>
 					<button type="button" class="conn-action" @click.prevent="showPresentations()"><span class="fa fa-md fa-arrow-left"></span> Go Back</button>
 				</div>
 			</div>
